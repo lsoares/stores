@@ -1,5 +1,8 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
 plugins {
     kotlin("jvm") version "1.4.30"
+    id("com.github.johnrengelman.shadow") version "6.1.0"
 }
 
 group = "com.luissoares"
@@ -29,4 +32,12 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+tasks {
+    named<ShadowJar>("shadowJar") {
+        manifest {
+            attributes(mapOf("Main-Class" to "restapi.AppKt"))
+        }
+    }
 }

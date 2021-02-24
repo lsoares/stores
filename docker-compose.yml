@@ -1,0 +1,8 @@
+version: "3.8"
+services:
+  restapi:
+    build: .
+    ports:
+      - "8080:8081"
+    environment:
+      API_PORT: 8081
