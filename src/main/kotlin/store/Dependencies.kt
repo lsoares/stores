@@ -12,7 +12,7 @@ abstract class Dependencies {
 object MockConfig : Dependencies() {
     override val storesRepository by lazy {
         object : StoreRepository {
-            override fun list(): List<Store> =
+            override fun list() =
                 listOf(Store(1, "abc"), Store(2, "xyz"))
         }
     }

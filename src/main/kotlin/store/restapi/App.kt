@@ -6,10 +6,10 @@ import io.javalin.apibuilder.ApiBuilder.path
 import io.javalin.http.staticfiles.Location
 
 fun main() {
-    WebApp(MockConfig, System.getenv("API_PORT")?.toInt() ?: 8080).start()
+    WebApp(MockConfig).start(System.getenv("API_PORT")?.toInt() ?: 8080)
 }
 
-class WebApp(dependencies: Dependencies, private val port: Int) : AutoCloseable {
+class WebApp(dependencies: Dependencies) : AutoCloseable {
 
     private val javalinApp by lazy {
         with(dependencies) {
@@ -25,7 +25,7 @@ class WebApp(dependencies: Dependencies, private val port: Int) : AutoCloseable 
         }
     }
 
-    fun start(): WebApp {
+    fun start(port: Int): WebApp {
         javalinApp.start(port)
         return this
     }

@@ -4,9 +4,9 @@ import io.javalin.Javalin
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import store.storeprovider.StoreGateway.StoreInfo
+import store.storeprovider.StoreProviderClient.StoreInfo
 
-class StoreGatewayTest {
+class StoreProviderClientTest {
 
     private lateinit var fakeApi: Javalin
 
@@ -44,7 +44,7 @@ class StoreGatewayTest {
             )
             it.contentType("application/json")
         }.start(1234)
-        val storeGateway = StoreGateway(baseUrl = "http://localhost:1234", apiKey = "api-key1")
+        val storeGateway = StoreProviderClient(baseUrl = "http://localhost:1234", apiKey = "api-key1")
 
         val result = storeGateway.listStores(2)
 

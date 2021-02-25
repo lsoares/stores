@@ -8,7 +8,7 @@ import java.net.http.HttpClient.newHttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse.BodyHandlers.ofString
 
-class StoreGateway(private val baseUrl: String, private val apiKey: String) {
+class StoreProviderClient(private val baseUrl: String, private val apiKey: String) {
 
     fun listStores(page: Int): List<StoreInfo> {
         val httpRequest = HttpRequest.newBuilder()
