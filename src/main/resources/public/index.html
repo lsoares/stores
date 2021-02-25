@@ -1,10 +1,12 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
+    <title>ACME® Corporation Stores</title>
     <meta charset="UTF-8"/>
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
-<!--    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+    <!--    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>-->
 </head>
 
 <body>
@@ -13,7 +15,11 @@
         <h1>ACME® Corporation Stores</h1>
     </header>
     <section class="main">
-        {{ message }}
+        <table>
+            <tr v-for="store in stores" :key="store.id">
+                <td>{{ store.name }}</td>
+            </tr>
+        </table>
     </section>
 
 </section>

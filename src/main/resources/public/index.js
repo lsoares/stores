@@ -1,6 +1,11 @@
-const app = new Vue({
+new Vue({
     el: '#stores-app',
     data: {
-        message: 'Hello Vue!'
+        stores: [],
+    },
+    mounted() {
+        axios
+            .get('/stores')
+            .then(response => (this.stores = response.data))
     }
 })
