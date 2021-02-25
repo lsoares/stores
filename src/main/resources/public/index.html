@@ -18,10 +18,17 @@
         <button @click="previousPage" :disabled="currentPage <= 1">◀</button>
         <label>Page {{ currentPage}}</label>
         <button @click="nextPage">▶</button>
-        <table>
-            <tr v-for="store in stores" :key="store.id">
-                <td>{{ store.name }}</td>
-            </tr>
+        <table class="styled-table">
+            <thead>
+                <tr>
+                    <td>Name</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="store in stores" :key="store.id">
+                    <td>{{ store.name }}</td>
+                </tr>
+            </tbody>
         </table>
         <button @click="previousPage" :disabled="currentPage <= 1">◀</button>
         <label>Page {{ currentPage}}</label>
