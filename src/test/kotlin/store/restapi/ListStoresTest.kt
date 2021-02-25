@@ -1,7 +1,7 @@
-package restapi
+package store.restapi
 
-import domain.ListStoresUseCase
-import domain.Store
+import store.domain.ListStoresUseCase
+import store.domain.Store
 import io.javalin.Javalin
 import io.mockk.clearAllMocks
 import io.mockk.every

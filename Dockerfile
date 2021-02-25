@@ -4,7 +4,7 @@ RUN mkdir -p /usr/src/app
 ENV GRADLE_USER_HOME /home/gradle/cache_home
 COPY ./build.gradle.kts /usr/src/app
 WORKDIR /usr/src/app
-RUN gradle clean build -i --stacktrace
+RUN gradle clean build
 
 FROM gradle:6.8.2-openj9 as build
 COPY --from=cache /home/gradle/cache_home /home/gradle/.gradle

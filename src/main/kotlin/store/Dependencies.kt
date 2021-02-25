@@ -1,8 +1,8 @@
-package restapi
+package store.restapi
 
-import domain.ListStoresUseCase
-import domain.Store
-import domain.StoreRepository
+import store.domain.ListStoresUseCase
+import store.domain.Store
+import store.domain.StoreRepository
 
 abstract class Dependencies {
     abstract val storesRepository: StoreRepository
@@ -12,7 +12,8 @@ abstract class Dependencies {
 object MockConfig : Dependencies() {
     override val storesRepository by lazy {
         object : StoreRepository {
-            override fun list(): List<Store> = listOf(Store(1, "abc"), Store(2, "xyz"))
+            override fun list(): List<Store> =
+                listOf(Store(1, "abc"), Store(2, "xyz"))
         }
     }
 }

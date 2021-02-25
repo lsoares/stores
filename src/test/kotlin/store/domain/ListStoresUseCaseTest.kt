@@ -1,14 +1,14 @@
-package domain
+package store.domain
 
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
-class ListStoresTestHandlerUseCaseTest {
+class ListStoresUseCaseTest {
 
     @Test
-    fun `it returns a list of stores from the repo`() {
+    fun `returns a list of stores from the repo`() {
         val repository = mockk<StoreRepository> {
             every { list() } returns listOf(
                 Store(

@@ -1,3 +1,3 @@
-package domain
+package store.domain
 
 data class Store(val id: Int, val name: String)

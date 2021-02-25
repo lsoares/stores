@@ -37,7 +37,7 @@ tasks.withType<Test> {
 tasks {
     named<ShadowJar>("shadowJar") {
         manifest {
-            attributes(mapOf("Main-Class" to "restapi.AppKt"))
+            attributes(mapOf("Main-Class" to "store.restapi.AppKt"))
         }
     }
 }

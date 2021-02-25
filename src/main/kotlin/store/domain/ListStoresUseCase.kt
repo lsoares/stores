@@ -1,4 +1,4 @@
-package domain
+package store.domain
 
 class ListStoresUseCase(private val repository: StoreRepository) {
 
