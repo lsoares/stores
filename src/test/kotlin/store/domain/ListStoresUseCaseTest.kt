@@ -10,7 +10,7 @@ class ListStoresUseCaseTest {
     @Test
     fun `returns a list of stores from the repo`() {
         val repository = mockk<StoreRepository> {
-            every { list() } returns listOf(
+            every { list(2) } returns listOf(
                 Store(
                     id = 123,
                     name = "store 1",
@@ -19,7 +19,7 @@ class ListStoresUseCaseTest {
         }
         val listStores = ListStoresUseCase(repository)
 
-        val stores = listStores()
+        val stores = listStores(2)
 
         assertEquals(
             listOf(

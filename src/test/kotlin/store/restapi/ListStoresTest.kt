@@ -15,19 +15,23 @@ class ListStoresTest {
 
     @Test
     fun `list stores though REST API`() {
+        var requestedPage: Int? = null
         val fakeDeps = object : Dependencies() {
             override val storesRepository = object : StoreRepository {
-                override fun list() =
-                    listOf(Store(id = 1234, name = "Store 1"))
+                override fun list(page: Int): List<Store> {
+                    requestedPage = page
+                    return listOf(Store(id = 1234, name = "Store 1"))
+                }
             }
         }
         WebApp(fakeDeps).use {
             it.start(1234)
 
             val response = newHttpClient().send(
-                newBuilder().GET().uri(URI("http://localhost:1234/stores")).build(), ofString()
+                newBuilder().GET().uri(URI("http://localhost:1234/stores?page=12")).build(), ofString()
             )
 
+            assertEquals(12, requestedPage)
             assertEquals(HttpStatus.OK_200, response.statusCode())
             JSONAssert.assertEquals(
                 """ [ { "id": 1234, "name": "Store 1" } ] """,

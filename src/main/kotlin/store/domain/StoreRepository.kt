@@ -1,5 +1,5 @@
 package store.domain
 
 interface StoreRepository {
-    fun list(): List<Store>
+    fun list(page: Int): List<Store>
 }
