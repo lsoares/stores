@@ -6,7 +6,10 @@ import io.javalin.apibuilder.ApiBuilder.path
 import io.javalin.http.staticfiles.Location
 
 fun main() {
-    App(StubbedConfig).start(System.getenv("API_PORT")?.toInt() ?: 8080)
+    val config = RealConfig
+    // val config = StubbedConfig
+    App(config)
+        .start(System.getenv("API_PORT")?.toInt() ?: 8080)
 }
 
 class App(appConfig: AppConfig) : AutoCloseable {

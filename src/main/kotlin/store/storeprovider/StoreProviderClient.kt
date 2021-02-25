@@ -3,28 +3,33 @@ package store.storeprovider
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.node.ArrayNode
 import org.eclipse.jetty.http.HttpStatus
+import store.domain.Store
+import store.domain.StoreRepository
+import java.lang.RuntimeException
 import java.net.URI
 import java.net.http.HttpClient.newHttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse.BodyHandlers.ofString
 
-class StoreProviderClient(private val baseUrl: String, private val apiKey: String) {
+class StoreProviderClient(private val baseUrl: String, private val apiKey: String): StoreRepository {
 
-    fun listStores(page: Int): List<StoreInfo> {
+    override fun list(page: Int): List<Store> {
         val httpRequest = HttpRequest.newBuilder()
-            .uri(URI.create("$baseUrl/v1/stores?page=$page"))
+            .uri(URI.create("$baseUrl/v1/stores/?page=$page"))
             .header("apiKey", apiKey)
             .GET()
 
         return newHttpClient.send(httpRequest.build(), ofString()).run {
-            check(statusCode() == HttpStatus.OK_200)
-            body().toStoreInfo()
+            check(statusCode() == HttpStatus.OK_200) {
+                throw RuntimeException("${statusCode()} - ${body()}")
+            }
+            body().toStore()
         }
     }
 
-    private fun String.toStoreInfo() =
+    private fun String.toStore() =
         (objectMapper.readTree(this) as ArrayNode).map {
-            StoreInfo(
+            Store(
                 id = it.get("id").asInt(),
                 code = it.get("code").textValue(),
                 description = it.get("description").textValue(),
@@ -33,15 +38,6 @@ class StoreProviderClient(private val baseUrl: String, private val apiKey: Strin
                 storeType = it.get("storeType").textValue(),
             )
         }
-
-    data class StoreInfo(
-        val id: Int,
-        val code: String?,
-        val description: String?,
-        val name: String?,
-        val openingDate: String,
-        val storeType: String?,
-    )
 }
 
 private val objectMapper = ObjectMapper()

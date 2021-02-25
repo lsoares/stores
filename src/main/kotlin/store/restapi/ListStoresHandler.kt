@@ -14,8 +14,8 @@ class ListStoresHandler(private val listStores: ListStoresUseCase) : Handler {
     private val Context.page get() = queryParam("page")?.toInt() ?: error("missing page param")
 
     private fun List<Store>.toRepresenter() =
-        map { StoreRepresenter(it.id, it.name) }
+        map { StoreRepresenter(id = it.id, name = it.name) }
 
     @Suppress("unused")
-    private class StoreRepresenter(val id: Int, val name: String)
+    private class StoreRepresenter(val id: Int, val name: String?)
 }

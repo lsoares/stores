@@ -4,7 +4,7 @@ import io.javalin.Javalin
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import store.storeprovider.StoreProviderClient.StoreInfo
+import store.domain.Store
 
 class StoreProviderClientTest {
 
@@ -46,13 +46,13 @@ class StoreProviderClientTest {
         }.start(1234)
         val storeGateway = StoreProviderClient(baseUrl = "http://localhost:1234", apiKey = "api-key1")
 
-        val result = storeGateway.listStores(2)
+        val result = storeGateway.list(2)
 
         assertEquals("api-key1", usedApiKey)
         assertEquals(2, usedPage)
         assertEquals(
             listOf(
-                StoreInfo(
+                Store(
                     id = 101,
                     name = "store 1",
                     description = null,
@@ -60,7 +60,7 @@ class StoreProviderClientTest {
                     openingDate = "2021-02-07",
                     storeType = "RETAIL",
                 ),
-                StoreInfo(
+                Store(
                     id = 102,
                     name = "store 2",
                     description = "desc 2",

@@ -20,7 +20,14 @@ class ListStoresTest {
             override val storesRepository = object : StoreRepository {
                 override fun list(page: Int): List<Store> {
                     requestedPage = page
-                    return listOf(Store(id = 1234, name = "Store 1"))
+                    return listOf(Store(
+                        id = 1234,
+                        name = "Store 1",
+                        description = "desc 1",
+                        code = "code 1",
+                        openingDate = "date 1",
+                        storeType = "type 1",
+                    ))
                 }
             }
         }
