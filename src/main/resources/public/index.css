@@ -4,6 +4,31 @@ body {
     font-family: 'Open Sans', sans-serif;
 }
 
+.main, .detail {
+    display: inline-block;
+    vertical-align: top;
+}
+
+.detail {
+    margin-left: 32px;
+    max-width: 300px;
+    margin-top: 52px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+    padding: 16px;
+}
+
+.detail > * {
+    display: block;
+    margin-bottom: 16px;
+}
+.detail h2 {
+    margin-top: 0;
+}
+
+.detail label span {
+    font-weight: 900;
+}
+
 .styled-table {
     border-collapse: collapse;
     margin: 25px 0;
@@ -26,6 +51,10 @@ body {
 
 .styled-table tbody tr {
     border-bottom: 1px solid #dddddd;
+}
+
+.styled-table tbody tr:hover {
+    cursor: pointer;
 }
 
 .styled-table tbody tr:nth-of-type(even) {

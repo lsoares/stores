@@ -22,7 +22,7 @@ object StubbedConfig : AppConfig() {
                             code = "code ${it * page}",
                             description =  "description ${it * page}",
                             openingDate = "date",
-                            storeType = "type ${it * page}",
+                            type = "type ${it * page}",
                         )
                     }
                     else -> emptyList()

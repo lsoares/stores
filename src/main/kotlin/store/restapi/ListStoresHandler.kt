@@ -20,7 +20,7 @@ class ListStoresHandler(private val listStores: ListStoresUseCase) : Handler {
             code = it.code,
             description = it.description,
             openingDate = it.openingDate,
-            storeType = it.storeType,
+            type = it.type,
         ) }
 
     @Suppress("unused")
@@ -30,8 +30,8 @@ class ListStoresHandler(private val listStores: ListStoresUseCase) : Handler {
         val code: String?,
         val description: String?,
         val openingDate: String?,
-        storeType: String?,
+        type: String?,
     ) {
-        val storeType = storeType?.toLowerCase()?.capitalize()
+        val type = type?.toLowerCase()?.capitalize()
     }
 }

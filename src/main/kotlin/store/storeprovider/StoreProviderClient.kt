@@ -35,7 +35,7 @@ class StoreProviderClient(private val baseUrl: String, private val apiKey: Strin
                 description = it.get("description").textValue(),
                 name = it.get("name").textValue(),
                 openingDate = it.get("openingDate").textValue(),
-                storeType = it.get("storeType").textValue(),
+                type = it.get("storeType").textValue(),
             )
         }
 }

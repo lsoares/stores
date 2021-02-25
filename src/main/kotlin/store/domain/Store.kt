@@ -6,5 +6,5 @@ data class Store(
     val description: String?,
     val name: String?,
     val openingDate: String?,
-    val storeType: String?,
+    val type: String?,
 )

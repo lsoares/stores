@@ -58,7 +58,7 @@ class StoreProviderClientTest {
                     description = null,
                     code = "code1",
                     openingDate = "2021-02-07",
-                    storeType = "RETAIL",
+                    type = "RETAIL",
                 ),
                 Store(
                     id = 102,
@@ -66,7 +66,7 @@ class StoreProviderClientTest {
                     description = "desc 2",
                     code = "code2",
                     openingDate = "2019-01-03",
-                    storeType = null,
+                    type = null,
                 ),
             ),
             result

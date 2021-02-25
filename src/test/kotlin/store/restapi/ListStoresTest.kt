@@ -26,7 +26,7 @@ class ListStoresTest {
                         description = "desc 1",
                         code = "code 1",
                         openingDate = "date 1",
-                        storeType = "STORE TYPE 1",
+                        type = "STORE TYPE 1",
                     ))
                 }
             }

@@ -2,15 +2,18 @@ const StoreList = {
     data() {
         return {
             stores: [],
+            currentStore: null,
             currentPage: 1,
         }
     },
     methods: {
         nextPage() {
+            this.currentStore = null
             this.currentPage++
             this.getStores()
         },
         previousPage() {
+            this.currentStore = null
             this.currentPage--
             this.getStores()
         },

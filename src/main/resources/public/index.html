@@ -27,7 +27,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="store in stores" :key="store.id">
+                <tr v-for="store in stores" :key="store.id" @click="currentStore = store">
                     <td>{{ store.name }}</td>
                     <td>{{ store.storeType }}</td>
                     <td>{{ store.openingDate }}</td>
@@ -37,6 +37,15 @@
         <button @click="previousPage" :disabled="currentPage <= 1">◀</button>
         <label>Page {{ currentPage}}</label>
         <button @click="nextPage">▶</button>
+    </section>
+
+    <section class="detail" v-if="currentStore !== null">
+        <h2>{{ currentStore.name }}</h2>
+        <span>{{ currentStore.type}}</span>
+        <label>Id. <span>{{ currentStore.id}}</span></label>
+        <label>Code <span>{{ currentStore.code}}</span></label>
+        <label>Opening date <span>{{ currentStore.openingDate}}</span></label>
+        <small>{{ currentStore.description }}</small>
     </section>
 </section>
 

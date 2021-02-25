@@ -3,16 +3,16 @@
 ## TODO
 - List stores
   - paginate list of stores ✅
-  - show basic info
+  - worker to fetch data from APIs
+  - load from local storage
+- View store details
+  - show basic info ✅
   - view seasons
   - view additional properties
-  - retry page
-  - save stores locally
-- Search store
+- Search stores
 - Edit store name
-- Download CSV
-- Worker to fetch data from APIs
-- Cron job for worker
+- ✨ Download CSV
+- ✨ Cron job for worker
 
 ## Usage
 1. Run `docker-compose run` at the root.
