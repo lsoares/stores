@@ -4,16 +4,21 @@ import store.domain.ListStoresUseCase
 import store.domain.Store
 import store.domain.StoreRepository
 
-abstract class Dependencies {
+abstract class AppConfig {
     abstract val storesRepository: StoreRepository
     open val listStores by lazy { ListStoresUseCase(storesRepository) }
 }
 
-object MockConfig : Dependencies() {
+object StubbedConfig : AppConfig() {
     override val storesRepository by lazy {
         object : StoreRepository {
-            override fun list() =
-                listOf(Store(1, "abc"), Store(2, "xyz"))
+            override fun list(page: Int) =
+                when (page) {
+                    in 1..5 -> (1..10).map {
+                        Store(it * page, "abc ${it * page}")
+                    }
+                    else -> emptyList()
+                }
         }
     }
 }

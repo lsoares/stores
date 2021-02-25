@@ -16,7 +16,7 @@ class ListStoresTest {
     @Test
     fun `list stores though REST API`() {
         var requestedPage: Int? = null
-        val fakeDeps = object : Dependencies() {
+        val fakeDeps = object : AppConfig() {
             override val storesRepository = object : StoreRepository {
                 override fun list(page: Int): List<Store> {
                     requestedPage = page
@@ -24,7 +24,7 @@ class ListStoresTest {
                 }
             }
         }
-        WebApp(fakeDeps).use {
+        App(fakeDeps).use {
             it.start(1234)
 
             val response = newHttpClient().send(

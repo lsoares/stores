@@ -6,13 +6,13 @@ import io.javalin.apibuilder.ApiBuilder.path
 import io.javalin.http.staticfiles.Location
 
 fun main() {
-    WebApp(MockConfig).start(System.getenv("API_PORT")?.toInt() ?: 8080)
+    App(StubbedConfig).start(System.getenv("API_PORT")?.toInt() ?: 8080)
 }
 
-class WebApp(dependencies: Dependencies) : AutoCloseable {
+class App(appConfig: AppConfig) : AutoCloseable {
 
     private val javalinApp by lazy {
-        with(dependencies) {
+        with(appConfig) {
             Javalin
                 .create {
                     it.addStaticFiles("src/main/resources/public", Location.EXTERNAL)
@@ -25,7 +25,7 @@ class WebApp(dependencies: Dependencies) : AutoCloseable {
         }
     }
 
-    fun start(port: Int): WebApp {
+    fun start(port: Int): App {
         javalinApp.start(port)
         return this
     }

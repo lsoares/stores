@@ -2,12 +2,26 @@ const StoreList = {
     data() {
         return {
             stores: [],
+            currentPage: 1,
+        }
+    },
+    methods: {
+        nextPage() {
+            this.currentPage++
+            this.getStores()
+        },
+        previousPage() {
+            this.currentPage--
+            this.getStores()
+        },
+        getStores() {
+            axios
+                .get('/stores', {params: {page: this.currentPage}})
+                .then(response => this.stores = response.data)
         }
     },
     mounted() {
-        axios
-            .get('/stores')
-            .then(response => this.stores = response.data)
+        this.getStores()
     }
 }
 

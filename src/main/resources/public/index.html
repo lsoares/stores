@@ -6,6 +6,7 @@
     <meta charset="UTF-8"/>
     <script src="https://unpkg.com/vue@next"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+    <link rel="stylesheet" href="index.css"/>
 </head>
 
 <body>
@@ -19,6 +20,9 @@
                 <td>{{ store.name }}</td>
             </tr>
         </table>
+        <button @click="previousPage" :disabled="currentPage <= 1">◀</button>
+        <label>Page {{ currentPage}}</label>
+        <button @click="nextPage" :disabled="stores.length === 0">▶</button>
     </section>
 </section>
 
