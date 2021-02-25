@@ -15,6 +15,9 @@
         <h1>ACME® Corporation Stores</h1>
     </header>
     <section class="main">
+        <button @click="previousPage" :disabled="currentPage <= 1">◀</button>
+        <label>Page {{ currentPage}}</label>
+        <button @click="nextPage">▶</button>
         <table>
             <tr v-for="store in stores" :key="store.id">
                 <td>{{ store.name }}</td>
@@ -22,7 +25,7 @@
         </table>
         <button @click="previousPage" :disabled="currentPage <= 1">◀</button>
         <label>Page {{ currentPage}}</label>
-        <button @click="nextPage" :disabled="stores.length === 0">▶</button>
+        <button @click="nextPage">▶</button>
     </section>
 </section>
 

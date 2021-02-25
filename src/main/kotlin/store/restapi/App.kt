@@ -4,6 +4,7 @@ import io.javalin.Javalin
 import io.javalin.apibuilder.ApiBuilder.get
 import io.javalin.apibuilder.ApiBuilder.path
 import io.javalin.http.staticfiles.Location
+import java.lang.Exception
 
 fun main() {
     val config = RealConfig
@@ -24,6 +25,10 @@ class App(appConfig: AppConfig) : AutoCloseable {
                     path("stores") {
                         get(ListStoresHandler(listStores))
                     }
+                }
+                .exception(Exception::class.java) { ex, _ ->
+                    // TODO: use proper logger
+                    println(ex.message)
                 }
         }
     }
