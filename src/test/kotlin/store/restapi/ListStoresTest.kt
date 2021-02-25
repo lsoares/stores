@@ -26,7 +26,7 @@ class ListStoresTest {
                         description = "desc 1",
                         code = "code 1",
                         openingDate = "date 1",
-                        storeType = "type 1",
+                        storeType = "STORE TYPE 1",
                     ))
                 }
             }
@@ -41,7 +41,16 @@ class ListStoresTest {
             assertEquals(12, requestedPage)
             assertEquals(HttpStatus.OK_200, response.statusCode())
             JSONAssert.assertEquals(
-                """ [ { "id": 1234, "name": "Store 1" } ] """,
+                """ [
+                       { 
+                         "id": 1234,
+                         "name": "Store 1",
+                         "description": "desc 1",
+                         "code": "code 1",
+                         "openingDate": "date 1",
+                         "storeType": "Store type 1"
+                       }
+                    ] """.trimMargin(),
                 response.body(),
                 true
             )

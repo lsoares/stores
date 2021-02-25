@@ -22,11 +22,15 @@
             <thead>
                 <tr>
                     <td>Name</td>
+                    <td>Type</td>
+                    <td>Opening date</td>
                 </tr>
             </thead>
             <tbody>
                 <tr v-for="store in stores" :key="store.id">
                     <td>{{ store.name }}</td>
+                    <td>{{ store.storeType }}</td>
+                    <td>{{ store.openingDate }}</td>
                 </tr>
             </tbody>
         </table>
