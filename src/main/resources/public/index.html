@@ -28,7 +28,9 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="store in stores" :key="store.id" @click="currentStore = store">
+                <tr v-for="store in stores" :key="store.id"
+                    @click="currentStore = store"
+                    :class="{ 'active-row': store.id === currentStore?.id }">
                     <td>{{ store.name }}</td>
                     <td>{{ store.storeType }}</td>
                     <td>{{ store.openingDate }}</td>
