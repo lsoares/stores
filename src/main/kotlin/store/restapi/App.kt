@@ -22,8 +22,7 @@ class App(appConfig: AppConfig) : AutoCloseable {
         with(appConfig) {
             Javalin
                 .create {
-                    it.addStaticFiles("/public", Location.CLASSPATH)
-                    it.setupLocalHotreload()
+                    it.setupWebpage()
                 }
                 .routes {
                     path("stores") {
@@ -37,9 +36,11 @@ class App(appConfig: AppConfig) : AutoCloseable {
         }
     }
 
-    private fun JavalinConfig.setupLocalHotreload() {
+    private fun JavalinConfig.setupWebpage() {
         runCatching {
             addStaticFiles("src/main/resources/public", Location.EXTERNAL)
+        }.onFailure {
+            addStaticFiles("/public", Location.CLASSPATH)
         }
     }
 

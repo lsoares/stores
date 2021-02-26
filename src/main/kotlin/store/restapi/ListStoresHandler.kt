@@ -11,17 +11,20 @@ class ListStoresHandler(private val listStores: ListStoresUseCase) : Handler {
         ctx.json(listStores(ctx.page).toRepresenter())
     }
 
-    private val Context.page get() = queryParam("page")?.toInt() ?: error("missing page param")
+    private val Context.page
+        get() = queryParam("page")?.toInt()?.minus(1) ?: error("missing page param")
 
     private fun List<Store>.toRepresenter() =
-        map { StoreRepresenter(
-            id = it.id,
-            name = it.name,
-            code = it.code,
-            description = it.description,
-            openingDate = it.openingDate,
-            type = it.type,
-        ) }
+        map {
+            StoreRepresenter(
+                id = it.id,
+                name = it.name,
+                code = it.code,
+                description = it.description,
+                openingDate = it.openingDate,
+                type = it.type,
+            )
+        }
 
     @Suppress("unused")
     private class StoreRepresenter(

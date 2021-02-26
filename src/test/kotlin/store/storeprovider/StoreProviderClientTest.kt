@@ -46,7 +46,7 @@ class StoreProviderClientTest {
         }.start(1234)
         val storeGateway = StoreProviderClient(baseUrl = "http://localhost:1234", apiKey = "api-key1")
 
-        val result = storeGateway.list(2)
+        val result = storeGateway.listStores(2)
 
         assertEquals("api-key1", usedApiKey)
         assertEquals(2, usedPage)

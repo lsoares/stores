@@ -4,15 +4,14 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.node.ArrayNode
 import org.eclipse.jetty.http.HttpStatus
 import store.domain.Store
-import store.domain.StoreRepository
 import java.net.URI
 import java.net.http.HttpClient.newHttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse.BodyHandlers.ofString
 
-class StoreProviderClient(private val baseUrl: String, private val apiKey: String) : StoreRepository {
+class StoreProviderClient(private val baseUrl: String, private val apiKey: String) {
 
-    override fun list(page: Int): List<Store> {
+    fun listStores(page: Int): List<Store> {
         val httpRequest = HttpRequest.newBuilder()
             .uri(URI.create("$baseUrl/v1/stores/?page=$page"))
             .header("apiKey", apiKey)
@@ -25,8 +24,6 @@ class StoreProviderClient(private val baseUrl: String, private val apiKey: Strin
             body().toStore()
         }
     }
-
-    override fun save(store: Store) = error("can't save remotely")
 
     private fun String.toStore() =
         (objectMapper.readTree(this) as ArrayNode).map {

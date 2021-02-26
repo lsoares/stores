@@ -73,3 +73,7 @@ body {
     font-weight: bold;
     color: #009879;
 }
+
+.page {
+    margin: 0 4px;
+}

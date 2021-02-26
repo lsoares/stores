@@ -34,8 +34,6 @@ class ListStoresTest {
 
                 override fun save(store: Store) = fail("no need to save")
             }
-            override val storesProvider: StoreRepository
-                get() = fail("no provider is needed")
         }
         App(fakeDeps).use {
             it.start(1234)

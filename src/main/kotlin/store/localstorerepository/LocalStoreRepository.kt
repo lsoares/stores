@@ -23,16 +23,19 @@ class LocalStoreRepository(private val database: Database) : StoreRepository {
     }
 
     override fun list(page: Int) = transaction(database) {
-        StoreSchema.selectAll().map { // TODO: save
-            Store(
-                id = it[StoreSchema.id],
-                name = it[StoreSchema.name],
-                code = it[StoreSchema.code],
-                description = it[StoreSchema.description],
-                type = it[StoreSchema.type],
-                openingDate = it[StoreSchema.openingDate],
-            )
-        }
+        StoreSchema.selectAll()
+            .orderBy(StoreSchema.id, SortOrder.DESC)
+            .limit(10, page * 10)
+            .map {
+                Store(
+                    id = it[StoreSchema.id],
+                    name = it[StoreSchema.name],
+                    code = it[StoreSchema.code],
+                    description = it[StoreSchema.description],
+                    type = it[StoreSchema.type],
+                    openingDate = it[StoreSchema.openingDate],
+                )
+            }
     }
 
     override fun save(store: Store) {

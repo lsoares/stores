@@ -9,7 +9,12 @@ import store.storeprovider.StoreProviderClient
 
 abstract class AppConfig {
     abstract val storesRepository: StoreRepository
-    abstract val storesProvider: StoreRepository
+    val storesProvider by lazy {
+        StoreProviderClient(
+            baseUrl = System.getenv("API_BASE_URL"),
+            apiKey = System.getenv("API_KEY"),
+        )
+    }
     open val listStores by lazy { ListStoresUseCase(storesRepository) }
 }
 
@@ -22,12 +27,6 @@ object RealConfig : AppConfig() {
                 user = System.getenv("DATABASE_USER"),
                 password = System.getenv("DATABASE_PASSWORD"),
             )
-        )
-    }
-    override val storesProvider by lazy {
-        StoreProviderClient(
-            baseUrl = System.getenv("API_BASE_URL"),
-            apiKey = System.getenv("API_KEY"),
         )
     }
 }
@@ -53,6 +52,4 @@ object StubbedConfig : AppConfig() {
             override fun save(store: Store) = error("not yet")
         }
     }
-    override val storesProvider: StoreRepository
-        get() = error("not configured")
 }

@@ -17,7 +17,7 @@
     </header>
     <section class="main">
         <button @click="previousPage" :disabled="currentPage <= 1">◀</button>
-        <label>Page {{ currentPage}}</label>
+        <label class="page">Page {{ currentPage}}</label>
         <button @click="nextPage">▶</button>
         <table class="styled-table">
             <thead>
@@ -36,7 +36,7 @@
             </tbody>
         </table>
         <button @click="previousPage" :disabled="currentPage <= 1">◀</button>
-        <label>Page {{ currentPage}}</label>
+        <label class="page">Page {{ currentPage}}</label>
         <button @click="nextPage">▶</button>
     </section>
 
