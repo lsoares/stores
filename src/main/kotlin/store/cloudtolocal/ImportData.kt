@@ -18,7 +18,7 @@ private tailrec fun RealConfig.importAllPages(page: Int = 1) {
             if (result.stores.isNotEmpty()) importAllPages(page + 1)
         }
         is FailedToFetch -> {
-            println("failed")
+            println("\tfailed")
             importAllPages(page + 1)
         }
     }

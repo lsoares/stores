@@ -1,11 +1,11 @@
-package store.localstorerepository
+package store.storerepository
 
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import store.domain.Store
 import store.domain.StoreRepository
 
-class LocalStoreRepository(private val database: Database) : StoreRepository {
+class StoreRepositoryPostgreSql(private val database: Database) : StoreRepository {
 
     init {
         transaction(database) {
@@ -40,7 +40,7 @@ class LocalStoreRepository(private val database: Database) : StoreRepository {
 
     override fun save(store: Store) {
         transaction(database) {
-            StoreSchema.insertIgnore {
+            StoreSchema.replace {
                 it[id] = store.id
                 it[name] = store.name
                 it[code] = store.code

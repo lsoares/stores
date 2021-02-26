@@ -11,6 +11,8 @@ services:
       DATABASE_URL: jdbc:postgresql://database:5432/stores_db
       DATABASE_USER: kotlin_app
       DATABASE_PASSWORD: abcde123
+    depends_on:
+      - database
   database:
     image: postgres:latest
     environment:

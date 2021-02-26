@@ -5,8 +5,8 @@
   - paginate list of stores ✅
   - load from local storage ✅
   - worker to fetch data from APIs ✅
-  - add test for repo upsert
-  - worker to update previous rows
+  - upsert stores ✅
+  - worker to update previous rows ✅
 - View store details
   - show basic info ✅
   - view additional properties

@@ -4,11 +4,11 @@ import org.jetbrains.exposed.sql.Database
 import store.domain.ListStoresUseCase
 import store.domain.Store
 import store.domain.StoreRepository
-import store.localstorerepository.LocalStoreRepository
 import store.storeprovider.StoreProviderClient
+import store.storerepository.StoreRepositoryPostgreSql
 
 abstract class AppConfig {
-    abstract val storesRepository: StoreRepository
+    abstract val storesRepository: store.domain.StoreRepository
     val storesProvider by lazy {
         StoreProviderClient(
             baseUrl = System.getenv("API_BASE_URL"),
@@ -20,10 +20,10 @@ abstract class AppConfig {
 
 object RealConfig : AppConfig() {
     override val storesRepository by lazy {
-        LocalStoreRepository(
+        StoreRepositoryPostgreSql(
             Database.connect(
-                url = System.getenv("DATABASE_URL"),
                 driver = "org.postgresql.Driver",
+                url = System.getenv("DATABASE_URL"),
                 user = System.getenv("DATABASE_USER"),
                 password = System.getenv("DATABASE_PASSWORD"),
             )
