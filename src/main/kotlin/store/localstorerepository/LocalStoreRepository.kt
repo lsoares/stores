@@ -1,9 +1,6 @@
 package store.localstorerepository
 
-import org.jetbrains.exposed.sql.Database
-import org.jetbrains.exposed.sql.SchemaUtils
-import org.jetbrains.exposed.sql.Table
-import org.jetbrains.exposed.sql.selectAll
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import store.domain.Store
 import store.domain.StoreRepository
@@ -11,22 +8,22 @@ import store.domain.StoreRepository
 class LocalStoreRepository(private val database: Database) : StoreRepository {
 
     init {
-        transaction {
-            SchemaUtils.create(StoreSchema)
+        transaction(database) {
+            SchemaUtils.createMissingTablesAndColumns(StoreSchema)
         }
     }
 
     private object StoreSchema : Table("stores") {
         val id = varchar("id", 20).primaryKey()
-        val name = varchar("name", 50)
-        val description = varchar("description", 2000)
-        val type = varchar("type", 40)
-        val openingDate = varchar("opening_date", 10) // TODO: let's be lean and use String
-        val code = varchar("code", 40)
+        val name = varchar("name", 50).nullable()
+        val description = varchar("description", 2000).nullable()
+        val type = varchar("type", 40).nullable()
+        val openingDate = varchar("opening_date", 10).nullable()
+        val code = varchar("code", 70).nullable()
     }
 
-    override fun list(page: Int) = transaction {
-        StoreSchema.selectAll().map {
+    override fun list(page: Int) = transaction(database) {
+        StoreSchema.selectAll().map { // TODO: save
             Store(
                 id = it[StoreSchema.id],
                 name = it[StoreSchema.name],
@@ -35,6 +32,19 @@ class LocalStoreRepository(private val database: Database) : StoreRepository {
                 type = it[StoreSchema.type],
                 openingDate = it[StoreSchema.openingDate],
             )
+        }
+    }
+
+    override fun save(store: Store) {
+        transaction(database) {
+            StoreSchema.insertIgnore {
+                it[id] = store.id
+                it[name] = store.name
+                it[code] = store.code
+                it[description] = store.description
+                it[type] = store.type
+                it[openingDate] = store.openingDate
+            }
         }
     }
 }

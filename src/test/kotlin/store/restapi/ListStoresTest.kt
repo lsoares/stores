@@ -16,7 +16,7 @@ import java.net.http.HttpResponse.BodyHandlers.ofString
 class ListStoresTest {
 
     @Test
-    fun `list stores though REST API`() {
+    fun `list stores through REST API`() {
         var requestedPage: Int? = null
         val fakeDeps = object : AppConfig() {
             override val storesRepository = object : StoreRepository {
@@ -31,6 +31,8 @@ class ListStoresTest {
                         type = "STORE TYPE 1",
                     ))
                 }
+
+                override fun save(store: Store) = fail("no need to save")
             }
             override val storesProvider: StoreRepository
                 get() = fail("no provider is needed")

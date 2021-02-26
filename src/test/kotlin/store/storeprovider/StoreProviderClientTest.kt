@@ -34,7 +34,7 @@ class StoreProviderClientTest {
               },
               {
                 "id": 102,
-                "code": "code2",
+                "code": "code2               ",
                 "description": "desc 2",
                 "name": "store 2",
                 "openingDate": "2019-01-03",

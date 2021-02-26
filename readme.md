@@ -3,8 +3,8 @@
 ## TODO
 - List stores
   - paginate list of stores ✅
+  - load from local storage ✅
   - worker to fetch data from APIs
-  - load from local storage
 - View store details
   - show basic info ✅
   - view seasons

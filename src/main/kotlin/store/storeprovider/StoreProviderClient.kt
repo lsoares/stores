@@ -26,11 +26,13 @@ class StoreProviderClient(private val baseUrl: String, private val apiKey: Strin
         }
     }
 
+    override fun save(store: Store) = error("can't save remotely")
+
     private fun String.toStore() =
         (objectMapper.readTree(this) as ArrayNode).map {
             Store(
                 id = it.get("id").intValue().toString(),
-                code = it.get("code").textValue(),
+                code = it.get("code").textValue()?.trim(),
                 description = it.get("description").textValue(),
                 name = it.get("name").textValue(),
                 openingDate = it.get("openingDate").textValue(),

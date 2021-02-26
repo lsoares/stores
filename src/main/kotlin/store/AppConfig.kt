@@ -49,6 +49,8 @@ object StubbedConfig : AppConfig() {
                     }
                     else -> emptyList()
                 }
+
+            override fun save(store: Store) = error("not yet")
         }
     }
     override val storesProvider: StoreRepository
