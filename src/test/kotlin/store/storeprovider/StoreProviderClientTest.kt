@@ -53,7 +53,7 @@ class StoreProviderClientTest {
         assertEquals(
             listOf(
                 Store(
-                    id = 101,
+                    id = "101",
                     name = "store 1",
                     description = null,
                     code = "code1",
@@ -61,7 +61,7 @@ class StoreProviderClientTest {
                     type = "RETAIL",
                 ),
                 Store(
-                    id = 102,
+                    id = "102",
                     name = "store 2",
                     description = "desc 2",
                     code = "code2",

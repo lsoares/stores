@@ -25,7 +25,7 @@ class ListStoresHandler(private val listStores: ListStoresUseCase) : Handler {
 
     @Suppress("unused")
     private class StoreRepresenter(
-        val id: Int,
+        val id: String,
         val name: String?,
         val code: String?,
         val description: String?,

@@ -3,7 +3,9 @@ package store.restapi
 import org.eclipse.jetty.http.HttpStatus
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.fail
 import org.skyscreamer.jsonassert.JSONAssert
+import store.AppConfig
 import store.domain.Store
 import store.domain.StoreRepository
 import java.net.URI
@@ -21,7 +23,7 @@ class ListStoresTest {
                 override fun list(page: Int): List<Store> {
                     requestedPage = page
                     return listOf(Store(
-                        id = 1234,
+                        id = "1234",
                         name = "Store 1",
                         description = "desc 1",
                         code = "code 1",
@@ -30,6 +32,8 @@ class ListStoresTest {
                     ))
                 }
             }
+            override val storesProvider: StoreRepository
+                get() = fail("no provider is needed")
         }
         App(fakeDeps).use {
             it.start(1234)
@@ -43,12 +47,12 @@ class ListStoresTest {
             JSONAssert.assertEquals(
                 """ [
                        { 
-                         "id": 1234,
+                         "id": "1234",
                          "name": "Store 1",
                          "description": "desc 1",
                          "code": "code 1",
                          "openingDate": "date 1",
-                         "storeType": "Store type 1"
+                         "type": "Store type 1"
                        }
                     ] """.trimMargin(),
                 response.body(),

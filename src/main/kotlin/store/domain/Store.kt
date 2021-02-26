@@ -1,7 +1,7 @@
 package store.domain
 
 data class Store(
-    val id: Int,
+    val id: String,
     val code: String?,
     val description: String?,
     val name: String?,

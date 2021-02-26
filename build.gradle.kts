@@ -10,6 +10,7 @@ version = "1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
+    jcenter()
 }
 
 dependencies {
@@ -19,9 +20,11 @@ dependencies {
     implementation("com.fasterxml.jackson.core:jackson-databind:2.+")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.+")
 
+    implementation("org.jetbrains.exposed:exposed:0.+")
+    implementation("org.postgresql:postgresql:42.+")
+
     testImplementation("org.skyscreamer:jsonassert:1.+")
     testImplementation("org.junit.jupiter:junit-jupiter-engine:5.+")
-    testImplementation("io.mockk:mockk:1.+")
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
