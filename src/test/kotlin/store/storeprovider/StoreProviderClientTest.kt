@@ -5,6 +5,7 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import store.domain.Store
+import store.storeprovider.StoreProviderClient.ListStoresResult.*
 
 class StoreProviderClientTest {
 
@@ -46,7 +47,7 @@ class StoreProviderClientTest {
         }.start(1234)
         val storeGateway = StoreProviderClient(baseUrl = "http://localhost:1234", apiKey = "api-key1")
 
-        val result = storeGateway.listStores(2)
+        val result = storeGateway.listStores(2) as Valid
 
         assertEquals("api-key1", usedApiKey)
         assertEquals(2, usedPage)
@@ -69,7 +70,9 @@ class StoreProviderClientTest {
                     type = null,
                 ),
             ),
-            result
+            result.stores
         )
     }
+
+    // TODO missing error case
 }

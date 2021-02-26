@@ -11,18 +11,23 @@ import java.net.http.HttpResponse.BodyHandlers.ofString
 
 class StoreProviderClient(private val baseUrl: String, private val apiKey: String) {
 
-    fun listStores(page: Int): List<Store> {
+    fun listStores(page: Int): ListStoresResult {
         val httpRequest = HttpRequest.newBuilder()
             .uri(URI.create("$baseUrl/v1/stores/?page=$page"))
             .header("apiKey", apiKey)
             .GET()
 
         return newHttpClient.send(httpRequest.build(), ofString()).run {
-            check(statusCode() == HttpStatus.OK_200) {
-                throw RuntimeException("${statusCode()} - ${body()}")
+            if (statusCode() != HttpStatus.OK_200) {
+                return ListStoresResult.FailedToFetch
             }
-            body().toStore()
+            ListStoresResult.Valid(body().toStore())
         }
+    }
+
+    sealed class ListStoresResult {
+        class Valid(val stores: List<Store>) : ListStoresResult()
+        object FailedToFetch : ListStoresResult()
     }
 
     private fun String.toStore() =
