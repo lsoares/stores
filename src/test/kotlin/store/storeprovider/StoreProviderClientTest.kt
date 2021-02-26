@@ -3,6 +3,7 @@ package store.storeprovider
 import io.javalin.Javalin
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import store.domain.Store
 import store.storeprovider.StoreProviderClient.ListStoresResult.*
@@ -74,5 +75,15 @@ class StoreProviderClientTest {
         )
     }
 
-    // TODO missing error case
+    @Test
+    fun `returns error when not 200`() {
+        fakeApi = Javalin.create().get("v1/stores") {
+            it.status(500)
+        }.start(1234)
+        val storeGateway = StoreProviderClient(baseUrl = "http://localhost:1234", apiKey = "api-key1")
+
+        val result = storeGateway.listStores(2)
+
+        assertTrue(result is FailedToFetch)
+    }
 }

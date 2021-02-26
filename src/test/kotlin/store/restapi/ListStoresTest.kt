@@ -35,9 +35,7 @@ class ListStoresTest {
                 override fun save(store: Store) = fail("no need to save")
             }
         }
-        App(fakeDeps).use {
-            it.start(1234)
-
+        App(fakeDeps).start(1234).use {
             val response = newHttpClient().send(
                 newBuilder().GET().uri(URI("http://localhost:1234/stores?page=12")).build(), ofString()
             )
