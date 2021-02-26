@@ -42,7 +42,7 @@ class ListStoresTest {
                 newBuilder().GET().uri(URI("http://localhost:1234/stores?page=12")).build(), ofString()
             )
 
-            assertEquals(12, requestedPage)
+            assertEquals(11, requestedPage)
             assertEquals(HttpStatus.OK_200, response.statusCode())
             JSONAssert.assertEquals(
                 """ [
