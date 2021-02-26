@@ -5,14 +5,14 @@ RUN mkdir -p /usr/src/app
 ENV GRADLE_USER_HOME /home/gradle/cache_home
 COPY ./build.gradle.kts /usr/src/app
 WORKDIR /usr/src/app
-RUN gradle clean build
+RUN gradle clean build -x test
 
 # build app
 FROM gradle:6.8.2-jre15 as build
 COPY --from=cache /home/gradle/cache_home /home/gradle/.gradle
 WORKDIR /usr/src/app
 COPY . .
-RUN gradle shadowJar
+RUN gradle shadowJar -x test
 
 # run app
 FROM openjdk:15.0-slim as run

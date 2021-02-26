@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test
 import store.domain.Store
 import store.storeprovider.StoreProviderClient.ListStoresResult.*
 
-class StoreProviderClientTest {
+class ListStoresTest {
 
     private lateinit var fakeApi: Javalin
 

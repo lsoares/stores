@@ -2,6 +2,7 @@ package store.storeprovider
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.node.ArrayNode
+import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
 import org.eclipse.jetty.http.HttpStatus
 import store.domain.Store
 import java.net.URI
@@ -17,7 +18,7 @@ class StoreProviderClient(private val baseUrl: String, private val apiKey: Strin
             .header("apiKey", apiKey)
             .GET()
 
-        return newHttpClient.send(httpRequest.build(), ofString()).run {
+        return httpClient.send(httpRequest.build(), ofString()).run {
             if (statusCode() != HttpStatus.OK_200) {
                 return ListStoresResult.FailedToFetch
             }
@@ -41,7 +42,28 @@ class StoreProviderClient(private val baseUrl: String, private val apiKey: Strin
                 type = it.get("storeType").textValue(),
             )
         }
+
+    fun listSpecialFields(): List<SpecialFields> {
+        val httpRequest = HttpRequest.newBuilder()
+            .uri(URI.create("$baseUrl/extra_data.csv"))
+            .header("apiKey", apiKey)
+            .GET()
+
+        return httpClient.send(httpRequest.build(), ofString()).run {
+            csvReader().readAllWithHeader(body().trim())
+                .mapNotNull { it ->
+                    val row = it.mapKeys { it.key.trim() }
+
+                    SpecialFields(
+                        storeId = row["Store id"] ?: return@mapNotNull null,
+                        properties = row.filterNot { it.key == "Store id" }
+                    )
+                }
+        }
+    }
+
+    data class SpecialFields(val storeId: String, val properties: Map<String, String>)
 }
 
 private val objectMapper = ObjectMapper()
-private val newHttpClient = newHttpClient()
+private val httpClient = newHttpClient()

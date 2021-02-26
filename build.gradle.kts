@@ -19,7 +19,7 @@ dependencies {
     implementation("org.slf4j:slf4j-simple:1.+")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.+")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.+")
-
+    implementation("com.github.doyaaaaaken:kotlin-csv:0.+")
     implementation("org.jetbrains.exposed:exposed:0.+")
     implementation("org.postgresql:postgresql:42.+")
 
