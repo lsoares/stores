@@ -7,6 +7,7 @@ import org.junit.jupiter.api.fail
 import org.skyscreamer.jsonassert.JSONAssert
 import store.AppConfig
 import store.domain.Store
+import store.domain.StoreInfo
 import store.domain.StoreRepository
 import java.net.URI
 import java.net.http.HttpClient.newHttpClient
@@ -32,7 +33,8 @@ class ListStoresTest {
                     ))
                 }
 
-                override fun save(store: Store) = fail("no need to save")
+                override fun saveInfo(storeInfo: StoreInfo) = fail("no need to save")
+                override fun saveExtraField(storeId: String, name: String, value: String) = fail("no need to save")
             }
         }
         App(fakeDeps).start(1234).use {

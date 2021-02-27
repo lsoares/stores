@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.node.ArrayNode
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
 import org.eclipse.jetty.http.HttpStatus
-import store.domain.Store
+import store.domain.StoreInfo
 import java.net.URI
 import java.net.http.HttpClient.newHttpClient
 import java.net.http.HttpRequest
@@ -27,13 +27,14 @@ class StoreProviderClient(private val baseUrl: String, private val apiKey: Strin
     }
 
     sealed class ListStoresResult {
-        class Valid(val stores: List<Store>) : ListStoresResult()
+        class Valid(val storeInfos: List<StoreInfo>) : ListStoresResult()
         object FailedToFetch : ListStoresResult()
     }
 
+
     private fun String.toStore() =
         (objectMapper.readTree(this) as ArrayNode).map {
-            Store(
+            StoreInfo(
                 id = it.get("id").intValue().toString(),
                 code = it.get("code").textValue()?.trim(),
                 description = it.get("description").textValue(),
@@ -43,7 +44,7 @@ class StoreProviderClient(private val baseUrl: String, private val apiKey: Strin
             )
         }
 
-    fun listSpecialFields(): List<SpecialFields> {
+    fun listSpecialFields(): List<StoreExtraFields> {
         val httpRequest = HttpRequest.newBuilder()
             .uri(URI.create("$baseUrl/extra_data.csv"))
             .header("apiKey", apiKey)
@@ -54,7 +55,7 @@ class StoreProviderClient(private val baseUrl: String, private val apiKey: Strin
                 .mapNotNull { it ->
                     val row = it.mapKeys { it.key.trim() }
 
-                    SpecialFields(
+                    StoreExtraFields(
                         storeId = row["Store id"] ?: return@mapNotNull null,
                         properties = row.filterNot { it.key == "Store id" }
                     )
@@ -62,7 +63,7 @@ class StoreProviderClient(private val baseUrl: String, private val apiKey: Strin
         }
     }
 
-    data class SpecialFields(val storeId: String, val properties: Map<String, String>)
+    data class StoreExtraFields(val storeId: String, val properties: Map<String, String>)
 }
 
 private val objectMapper = ObjectMapper()

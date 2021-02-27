@@ -1,13 +1,14 @@
 package store.storerepository
 
 import org.jetbrains.exposed.sql.Database
-import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.Table
+import org.jetbrains.exposed.sql.deleteAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import store.domain.Store
+import store.domain.StoreInfo
 
 class StoreRepositoryPostgreSqlTest {
 
@@ -18,47 +19,82 @@ class StoreRepositoryPostgreSqlTest {
         password = "abcde123_test"
     )
 
+    private val storeInfo = StoreInfo(
+        id = "101",
+        name = "store 1",
+        description = null,
+        code = "code1",
+        openingDate = "2021-02-07",
+        type = "RETAIL",
+    )
+
+
     @BeforeEach
     fun clear() {
         transaction(database) {
-            SchemaUtils.drop(object : Table("stores") {})
+            object : Table("store_extra_fields") {}.deleteAll()
+            object : Table("stores") {}.deleteAll()
         }
     }
 
     @Test
-    fun `saves a new store`() {
+    fun `saves a new store info`() {
         val storeRepository = StoreRepositoryPostgreSql(database)
-        val storeToSave = Store(
-            id = "101",
-            name = "store 1",
-            description = null,
-            code = "code1",
-            openingDate = "2021-02-07",
-            type = "RETAIL",
+
+        storeRepository.saveInfo(storeInfo)
+
+        assertEquals(
+            Store(
+                id = "101",
+                name = "store 1",
+                description = null,
+                code = "code1",
+                openingDate = "2021-02-07",
+                type = "RETAIL",
+            ),
+            storeRepository.list(0).single()
         )
-
-        storeRepository.save(storeToSave)
-
-        assertEquals(storeToSave, storeRepository.list(0).single())
     }
 
     @Test
-    fun `updates an existent store`() {
+    fun `updates an existent store info`() {
         val storeRepository = StoreRepositoryPostgreSql(database)
-        val storeToSave = Store(
-            id = "101",
-            name = "store 1",
-            description = null,
-            code = "code1",
-            openingDate = "2021-02-07",
-            type = "RETAIL",
-        )
-        storeRepository.save(storeToSave)
+        storeRepository.saveInfo(storeInfo)
 
-        storeRepository.save(storeToSave.copy(description = "new description"))
+        storeRepository.saveInfo(storeInfo.copy(description = "new description"))
 
         assertEquals(
-            storeToSave.copy(description = "new description"),
+            Store(
+                id = "101",
+                name = "store 1",
+                description = "new description",
+                code = "code1",
+                openingDate = "2021-02-07",
+                type = "RETAIL",
+            ),
+            storeRepository.list(0).single()
+        )
+    }
+
+    @Test
+    fun `saves store extra fields`() {
+        val storeRepository = StoreRepositoryPostgreSql(database)
+        storeRepository.saveInfo(storeInfo)
+
+        storeRepository.saveExtraField("101", "a", "1")
+        storeRepository.saveExtraField("101", "b", "2")
+        storeRepository.saveExtraField("101", "b", "3")
+
+        assertEquals(
+            Store(
+                id = "101",
+                name = "store 1",
+                description = null,
+                code = "code1",
+                openingDate = "2021-02-07",
+                type = "RETAIL",
+                extraFields = mapOf("a" to "1", "b" to "3")
+            ),
             storeRepository.list(0).single()
         )
     }

@@ -14,8 +14,8 @@ private tailrec fun RealConfig.importAllPages(page: Int = 1) {
     println("Importing page $page")
     when (val result = storesProvider.listStores(page)) {
         is Valid -> {
-            result.stores.map(storesRepository::save)
-            if (result.stores.isNotEmpty()) importAllPages(page + 1)
+            result.storeInfos.map(storesRepository::saveInfo)
+            if (result.storeInfos.isNotEmpty()) importAllPages(page + 1)
         }
         is FailedToFetch -> {
             println("\tfailed")

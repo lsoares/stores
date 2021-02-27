@@ -6,7 +6,8 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import store.domain.Store
-import store.storeprovider.StoreProviderClient.ListStoresResult.*
+import store.storeprovider.StoreProviderClient.ListStoresResult.FailedToFetch
+import store.storeprovider.StoreProviderClient.ListStoresResult.Valid
 
 class ListStoresTest {
 
@@ -71,7 +72,7 @@ class ListStoresTest {
                     type = null,
                 ),
             ),
-            result.stores
+            result.storeInfos
         )
     }
 

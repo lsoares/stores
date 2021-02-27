@@ -4,9 +4,9 @@ import io.javalin.Javalin
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import store.storeprovider.StoreProviderClient.SpecialFields
+import store.storeprovider.StoreProviderClient.StoreExtraFields
 
-class ListStoresSpecialFieldsTest {
+class ListStoresStoreExtraFieldsTest {
 
     private lateinit var fakeApi: Javalin
 
@@ -36,26 +36,26 @@ class ListStoresSpecialFieldsTest {
         assertEquals("api-key1", usedApiKey)
         assertEquals(
             listOf(
-                SpecialFields(
+                StoreExtraFields(
                     storeId = "1",
                     properties = mapOf(
                         "Special field 1" to "a",
                         "Special field 2" to "b",
-                    )
+                    ),
                 ),
-                SpecialFields(
+                StoreExtraFields(
                     storeId = "4",
                     properties = mapOf(
                         "Special field 1" to "",
                         "Special field 2" to "",
-                    )
+                    ),
                 ),
-                SpecialFields(
+                StoreExtraFields(
                     storeId = "29279500",
                     properties = mapOf(
                         "Special field 1" to "a, b, c",
                         "Special field 2" to "2",
-                    )
+                    ),
                 ),
             ),
             result
