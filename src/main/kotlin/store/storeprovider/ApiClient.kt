@@ -4,10 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.node.ArrayNode
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
 import org.eclipse.jetty.http.HttpStatus
-import store.domain.Store.Season.FIRST_HALF
-import store.domain.Store.Season.SECOND_HALF
 import store.domain.StoreInfo
-import store.domain.StoreSeason
 import java.net.URI
 import java.net.http.HttpClient.newHttpClient
 import java.net.http.HttpRequest
@@ -64,24 +61,20 @@ class StoreProviderClient(private val baseUrl: String, private val apiKey: Strin
         }
     }
 
-    fun listSeasons(): List<StoreSeason> {
+    fun listSeasons(): Map<String, Set<String>> {
         val httpRequest = HttpRequest.newBuilder()
             .uri(URI.create("$baseUrl/other/stores_and_seasons"))
             .header("apiKey", apiKey)
             .GET()
 
         return httpClient.send(httpRequest.build(), ofString()).run {
-            (objectMapper.readTree(body()) as ArrayNode).mapNotNull {
-                StoreSeason(
-                    storeId = it["storeId"].intValue().toString(),
-                    year = 2000 + it["season"].asText().takeLast(2).toInt(),
-                    season = when (it["season"].asText().take(2)) {
-                        "H1" -> FIRST_HALF
-                        "H2" -> SECOND_HALF
-                        else -> return@mapNotNull null
-                    }
-                )
-            }
+            (objectMapper.readTree(body()) as ArrayNode).groupBy {
+                it["storeId"].intValue().toString()
+            }.mapValues {
+                it.value.map {
+                    it["season"].asText()
+                }.toSet()
+            }.toMap()
         }
     }
 

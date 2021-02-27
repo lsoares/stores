@@ -39,8 +39,6 @@ private fun RealConfig.importExtraFields() {
 }
 
 private fun RealConfig.importSeasons() {
-    storesProvider.listSeasons().mapIndexed { i, storeSeason ->
-        println("$i $storeSeason")
-        storesRepository.saveSeason(storeSeason)
-    }
+    storesProvider.listSeasons()
+        .map { storesRepository.saveSeasons(it.key, it.value) }
 }

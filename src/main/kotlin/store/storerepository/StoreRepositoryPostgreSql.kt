@@ -1,12 +1,14 @@
 package store.storerepository
 
+import com.fasterxml.jackson.core.type.TypeReference
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import store.domain.Store
-import store.domain.Store.Season
 import store.domain.StoreInfo
 import store.domain.StoreRepository
-import store.domain.StoreSeason
+import java.sql.Blob
+import javax.sql.rowset.serial.SerialBlob
 
 class StoreRepositoryPostgreSql(private val database: Database) : StoreRepository {
 
@@ -15,7 +17,6 @@ class StoreRepositoryPostgreSql(private val database: Database) : StoreRepositor
             SchemaUtils.createMissingTablesAndColumns(
                 StoreSchema,
                 StoreExtraFieldSchema,
-                StoreSeasonsSchema,
             )
         }
     }
@@ -27,18 +28,13 @@ class StoreRepositoryPostgreSql(private val database: Database) : StoreRepositor
         val type = varchar("type", 40).nullable()
         val openingDate = varchar("opening_date", 10).nullable()
         val code = varchar("code", 70).nullable()
+        val seasons = blob("seasons_json").nullable()
     }
 
     private object StoreExtraFieldSchema : Table("store_extra_fields") {
         val storeId = varchar("id", 20).references(StoreSchema.id, onDelete = ReferenceOption.CASCADE).primaryKey()
         val name = varchar("name", 80).primaryKey()
         val value = varchar("value", 150).nullable()
-    }
-
-    private object StoreSeasonsSchema : Table("store_seasons") {
-        val storeId = varchar("id", 20).references(StoreSchema.id, onDelete = ReferenceOption.CASCADE).primaryKey()
-        val year = integer("year").primaryKey()
-        val season = varchar("season", 20).primaryKey()
     }
 
     override fun list(page: Int) = transaction(database) {
@@ -55,20 +51,18 @@ class StoreRepositoryPostgreSql(private val database: Database) : StoreRepositor
                     type = it[StoreSchema.type],
                     openingDate = it[StoreSchema.openingDate],
                     extraFields = listExtraFields(storeId),
-                    operationalDuring = listSeasons(storeId),
+                    seasons = it[StoreSchema.seasons]?.parseSeasons() ?: emptySet()
                 )
             }
     }
+
+    private fun Blob.parseSeasons() =
+        objectMapper.readValue(binaryStream, object : TypeReference<List<String>>() {}).toSet()
 
     private fun listExtraFields(storeId: String) =
         StoreExtraFieldSchema.select { StoreExtraFieldSchema.storeId eq storeId }
             .map { it[StoreExtraFieldSchema.name] to it[StoreExtraFieldSchema.value] }
             .toMap()
-
-    private fun listSeasons(storeId: String) =
-        StoreSeasonsSchema.select { StoreSeasonsSchema.storeId eq storeId }
-            .map { it[StoreSeasonsSchema.year] to Season.valueOf(it[StoreSeasonsSchema.season]) }
-            .toSet()
 
     override fun saveInfo(storeInfo: StoreInfo) {
         transaction(database) {
@@ -95,15 +89,15 @@ class StoreRepositoryPostgreSql(private val database: Database) : StoreRepositor
         }
     }
 
-    override fun saveSeason(storeSeason: StoreSeason) {
+    override fun saveSeasons(storeId: String, seasons: Set<String>) {
         transaction(database) {
-            if (StoreSchema.select { StoreSchema.id eq storeSeason.storeId }.count() == 0) return@transaction
+            if (StoreSchema.select { StoreSchema.id eq storeId }.count() == 0) return@transaction
 
-            StoreSeasonsSchema.replace {
-                it[storeId] = storeSeason.storeId
-                it[season] = storeSeason.season.name
-                it[year] = storeSeason.year
+            StoreSchema.update({ StoreSchema.id eq storeId }) {
+                it[StoreSchema.seasons] = SerialBlob(objectMapper.writeValueAsString(seasons).toByteArray())
             }
         }
     }
 }
+
+private val objectMapper = ObjectMapper()

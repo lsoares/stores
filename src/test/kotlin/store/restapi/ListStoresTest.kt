@@ -9,7 +9,6 @@ import store.AppConfig
 import store.domain.Store
 import store.domain.StoreInfo
 import store.domain.StoreRepository
-import store.domain.StoreSeason
 import java.net.URI
 import java.net.http.HttpClient.newHttpClient
 import java.net.http.HttpRequest.newBuilder
@@ -37,7 +36,7 @@ class ListStoresTest {
 
                 override fun saveInfo(storeInfo: StoreInfo) = fail("no need to save")
                 override fun saveExtraField(storeId: String, name: String, value: String) = fail("no need to save")
-                override fun saveSeason(storeSeason: StoreSeason) = fail("no need to save")
+                override fun saveSeasons(storeId: String, seasons: Set<String>) = fail("no need to save")
             }
         }
         App(fakeDeps).start(1234).use {

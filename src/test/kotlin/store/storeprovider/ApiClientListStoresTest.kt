@@ -5,7 +5,7 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
-import store.domain.Store
+import store.domain.StoreInfo
 import store.storeprovider.StoreProviderClient.ListStoresResult.FailedToFetch
 import store.storeprovider.StoreProviderClient.ListStoresResult.Valid
 
@@ -55,7 +55,7 @@ class ApiClientListStoresTest {
         assertEquals(2, usedPage)
         assertEquals(
             listOf(
-                Store(
+                StoreInfo(
                     id = "101",
                     name = "store 1",
                     description = null,
@@ -63,7 +63,7 @@ class ApiClientListStoresTest {
                     openingDate = "2021-02-07",
                     type = "RETAIL",
                 ),
-                Store(
+                StoreInfo(
                     id = "102",
                     name = "store 2",
                     description = "desc 2",

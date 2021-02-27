@@ -8,10 +8,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import store.domain.Store
-import store.domain.Store.Season.FIRST_HALF
-import store.domain.Store.Season.SECOND_HALF
 import store.domain.StoreInfo
-import store.domain.StoreSeason
 
 class StoreRepositoryPostgreSqlTest {
 
@@ -112,16 +109,7 @@ class StoreRepositoryPostgreSqlTest {
         val storeRepository = StoreRepositoryPostgreSql(database)
         storeRepository.saveInfo(storeInfo)
 
-        storeRepository.saveSeason(StoreSeason(
-            storeId = "101",
-            year = 2000,
-            season = SECOND_HALF,
-        ))
-        storeRepository.saveSeason(StoreSeason(
-            storeId = "101",
-            year = 2022,
-            season = FIRST_HALF,
-        ))
+        storeRepository.saveSeasons("101", setOf("00 H2", "22 H2"))
 
         assertEquals(
             Store(
@@ -131,10 +119,7 @@ class StoreRepositoryPostgreSqlTest {
                 code = "code1",
                 openingDate = "2021-02-07",
                 type = "RETAIL",
-                operationalDuring = setOf(
-                    2000 to SECOND_HALF,
-                    2022 to FIRST_HALF,
-                )
+                seasons = setOf("00 H2", "22 H2"),
             ),
             storeRepository.list(0).single()
         )
@@ -145,10 +130,6 @@ class StoreRepositoryPostgreSqlTest {
         val storeRepository = StoreRepositoryPostgreSql(database)
         storeRepository.saveInfo(storeInfo)
 
-        storeRepository.saveSeason(StoreSeason(
-            storeId = "999",
-            year = 2022,
-            season = FIRST_HALF,
-        ))
+        storeRepository.saveSeasons("999", setOf("2020 H2"))
     }
 }
