@@ -30,7 +30,8 @@ class ListStoresTest {
                         code = "code 1",
                         openingDate = "date 1",
                         type = "STORE TYPE 1",
-                        extraFields = mapOf("ab" to "x", "xy" to "bla")
+                        extraFields = mapOf("ab" to "x", "xy" to "bla"),
+                        seasons = setOf("2020 H1", "2002 H2"),
                     ))
                 }
 
@@ -58,7 +59,8 @@ class ListStoresTest {
                          "extraFields": {
                             "ab": "x", 
                             "xy": "bla"
-                         }
+                         },
+                         "seasons": ["2020 H1", "2002 H2"]
                        }
                     ] """.trimMargin(),
                 response.body(),

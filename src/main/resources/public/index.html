@@ -48,9 +48,10 @@
         <label>Id.: <span>{{ currentStore.id }}</span></label>
         <label>Code: <span>{{ currentStore.code }}</span></label>
         <label>Opening date: <span>{{ currentStore.openingDate }}</span></label>
-        <li v-for="(value, key) in currentStore.extraFields">
-            <label>{{ key }}: <span>{{ value }}</span></label>
-        </li>
+        <label v-for="(value, key) in currentStore.extraFields">
+            {{ key }}: <span>{{ value }}</span>
+        </label>
+        <label>Seasons: <span>{{ currentStore.seasons.join(", ")}}</span></label>
         <small>{{ currentStore.description }}</small>
     </section>
 </section>

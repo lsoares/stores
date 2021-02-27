@@ -9,9 +9,7 @@ import store.AppConfig
 import store.RealConfig
 
 fun main() {
-    val config = RealConfig
-    // val config = StubbedConfig
-    App(config).start(apiPort)
+    App(RealConfig).start(apiPort)
 }
 
 private val apiPort get() = System.getenv("API_PORT")?.toInt() ?: 8080

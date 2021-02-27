@@ -8,7 +8,7 @@
 - View store details
   - show basic info ✅
   - view extra fields ✅
-  - view seasons
+  - view seasons ✅
 - Search stores by name
 - Edit store name
 - ✨ Download CSV
