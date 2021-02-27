@@ -23,6 +23,7 @@ class ListStoresHandler(private val listStores: ListStoresUseCase) : Handler {
                 description = it.description,
                 openingDate = it.openingDate,
                 type = it.type,
+                extraFields = it.extraFields,
             )
         }
 
@@ -33,6 +34,7 @@ class ListStoresHandler(private val listStores: ListStoresUseCase) : Handler {
         val code: String?,
         val description: String?,
         val openingDate: String?,
+        val extraFields: Map<String, String?>,
         type: String?,
     ) {
         val type = type?.toLowerCase()?.capitalize()

@@ -30,6 +30,7 @@ class ListStoresTest {
                         code = "code 1",
                         openingDate = "date 1",
                         type = "STORE TYPE 1",
+                        extraFields = mapOf("ab" to "x", "xy" to "bla")
                     ))
                 }
 
@@ -52,7 +53,11 @@ class ListStoresTest {
                          "description": "desc 1",
                          "code": "code 1",
                          "openingDate": "date 1",
-                         "type": "Store type 1"
+                         "type": "Store type 1",
+                         "extraFields": {
+                            "ab": "x", 
+                            "xy": "bla"
+                         }
                        }
                     ] """.trimMargin(),
                 response.body(),

@@ -21,20 +21,20 @@
         <button @click="nextPage">▶</button>
         <table class="styled-table">
             <thead>
-                <tr>
-                    <td>Name</td>
-                    <td>Type</td>
-                    <td>Opening date</td>
-                </tr>
+            <tr>
+                <td>Name</td>
+                <td>Type</td>
+                <td>Opening date</td>
+            </tr>
             </thead>
             <tbody>
-                <tr v-for="store in stores" :key="store.id"
-                    @click="currentStore = store"
-                    :class="{ 'active-row': store.id === currentStore?.id }">
-                    <td>{{ store.name }}</td>
-                    <td>{{ store.type }}</td>
-                    <td>{{ store.openingDate }}</td>
-                </tr>
+            <tr :class="{ 'active-row': store.id === currentStore?.id }" :key="store.id"
+                @click="currentStore = store"
+                v-for="store in stores">
+                <td>{{ store.name }}</td>
+                <td>{{ store.type }}</td>
+                <td>{{ store.openingDate }}</td>
+            </tr>
             </tbody>
         </table>
         <button @click="previousPage" :disabled="currentPage <= 1">◀</button>
@@ -44,10 +44,13 @@
 
     <section class="detail" v-if="currentStore !== null">
         <h2>{{ currentStore.name }}</h2>
-        <span>{{ currentStore.type}}</span>
-        <label>Id. <span>{{ currentStore.id}}</span></label>
-        <label>Code <span>{{ currentStore.code}}</span></label>
-        <label>Opening date <span>{{ currentStore.openingDate}}</span></label>
+        <span class="store-type">{{ currentStore.type }}</span>
+        <label>Id.: <span>{{ currentStore.id }}</span></label>
+        <label>Code: <span>{{ currentStore.code }}</span></label>
+        <label>Opening date: <span>{{ currentStore.openingDate }}</span></label>
+        <li v-for="(value, key) in currentStore.extraFields">
+            <label>{{ key }}: <span>{{ value }}</span></label>
+        </li>
         <small>{{ currentStore.description }}</small>
     </section>
 </section>

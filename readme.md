@@ -9,7 +9,7 @@
   - worker to update previous rows ✅
 - View store details
   - show basic info ✅
-  - view additional properties
+  - view extra fields ✅
   - view seasons
 - Search stores
 - Edit store name
