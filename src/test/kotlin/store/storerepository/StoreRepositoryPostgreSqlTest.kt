@@ -132,4 +132,24 @@ class StoreRepositoryPostgreSqlTest {
 
         storeRepository.saveSeasons("999", setOf("2020 H2"))
     }
+
+    @Test
+    fun `searches by text`() {
+        val storeRepository = StoreRepositoryPostgreSql(database)
+
+        storeRepository.saveInfo(storeInfo.copy(name = "A Typical Store Name"))
+        storeRepository.saveInfo(storeInfo.copy(id = "321", name = "other store"))
+
+        assertEquals(
+            Store(
+                id = "101",
+                name = "A Typical Store Name",
+                description = null,
+                code = "code1",
+                openingDate = "2021-02-07",
+                type = "RETAIL",
+            ),
+            storeRepository.list(0, "Typical").single()
+        )
+    }
 }

@@ -21,7 +21,9 @@ private tailrec fun RealConfig.importStoresInfo(page: Int = 1) {
     when (val result = storesProvider.listStores(page)) {
         is Valid -> {
             result.storeInfos.map(storesRepository::saveInfo)
-            if (result.storeInfos.isNotEmpty()) importStoresInfo(page + 1)
+            if (result.storeInfos.isNotEmpty()) {
+                importStoresInfo(page + 1)
+            }
         }
         is FailedToFetch -> {
             print("⚠️")
@@ -31,6 +33,7 @@ private tailrec fun RealConfig.importStoresInfo(page: Int = 1) {
 }
 
 private fun RealConfig.importExtraFields() {
+    // TODO: bulk insert
     storesProvider.listSpecialFields().map { (storeId, extraFields) ->
         extraFields.forEach {
             storesRepository.saveExtraField(storeId, it.key, it.value)
@@ -39,6 +42,7 @@ private fun RealConfig.importExtraFields() {
 }
 
 private fun RealConfig.importSeasons() {
+    // TODO: bulk insert
     storesProvider.listSeasons()
         .map { storesRepository.saveSeasons(it.key, it.value) }
 }

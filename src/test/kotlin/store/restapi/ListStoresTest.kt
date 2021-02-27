@@ -21,7 +21,7 @@ class ListStoresTest {
         var requestedPage: Int? = null
         val fakeDeps = object : AppConfig() {
             override val storesRepository = object : StoreRepository {
-                override fun list(page: Int): List<Store> {
+                override fun list(page: Int, nameSearch: String?): List<Store> {
                     requestedPage = page
                     return listOf(Store(
                         id = "1234",
@@ -62,7 +62,7 @@ class ListStoresTest {
                          },
                          "seasons": ["2020 H1", "2002 H2"]
                        }
-                    ] """.trimMargin(),
+                    ] """,
                 response.body(),
                 true
             )

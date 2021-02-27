@@ -4,22 +4,34 @@ const StoreList = {
             stores: [],
             currentStore: null,
             currentPage: 1,
+            nameSearch: '',
         }
+    },
+    watch: {
+        nameSearch() {
+            this.getStores()
+            this.currentPage = 1
+        },
+        currentPage() {
+            this.currentStore = null
+            this.getStores()
+        },
     },
     methods: {
         nextPage() {
-            this.currentStore = null
             this.currentPage++
-            this.getStores()
         },
         previousPage() {
-            this.currentStore = null
             this.currentPage--
-            this.getStores()
         },
         getStores() {
             axios
-                .get('/stores', {params: {page: this.currentPage}})
+                .get('/stores', {
+                    params: {
+                        page: this.currentPage,
+                        nameSearch: this.nameSearch,
+                    }
+                })
                 .then(response => this.stores = response.data)
         }
     },

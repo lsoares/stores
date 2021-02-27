@@ -37,11 +37,17 @@ class StoreRepositoryPostgreSql(private val database: Database) : StoreRepositor
         val value = varchar("value", 150).nullable()
     }
 
-    override fun list(page: Int) = transaction(database) {
+    override fun list(page: Int, nameSearch: String?) = transaction(database) {
         StoreSchema.selectAll()
             .orderBy(StoreSchema.id, SortOrder.DESC)
             .limit(10, page * 10)
-            .map {
+            .apply {
+                nameSearch?.takeUnless(String::isBlank)?.let {
+                    adjustWhere {
+                        Op.build { StoreSchema.name.lowerCase() like "%$it%".toLowerCase() }
+                    }
+                }
+            }.map {
                 val storeId = it[StoreSchema.id]
                 Store(
                     id = storeId,

@@ -8,8 +8,11 @@ import store.domain.Store
 class ListStoresHandler(private val listStores: ListStoresUseCase) : Handler {
 
     override fun handle(ctx: Context) {
-        ctx.json(listStores(ctx.page).toRepresenter())
+        ctx.json(listStores(ctx.page, ctx.textSearch).toRepresenter())
     }
+
+    private val Context.textSearch
+        get() = queryParam("nameSearch").takeUnless { it.isNullOrBlank() }
 
     private val Context.page
         get() = queryParam("page")?.toInt()?.minus(1) ?: error("missing page param")
@@ -36,7 +39,7 @@ class ListStoresHandler(private val listStores: ListStoresUseCase) : Handler {
         val description: String?,
         val openingDate: String?,
         val extraFields: Map<String, String?>,
-        val seasons: Set<String>,
+        val seasons: Set<String>, // TODO improve string representation
         type: String?,
     ) {
         val type = type?.toLowerCase()?.capitalize()

@@ -16,9 +16,12 @@
         <h1>ACME® Corporation Stores</h1>
     </header>
     <section class="main">
-        <button @click="previousPage" :disabled="currentPage <= 1">◀</button>
-        <label class="page">Page {{ currentPage}}</label>
-        <button @click="nextPage">▶</button>
+        <div>
+            <button :disabled="currentPage <= 1" @click="previousPage">◀</button>
+            <label class="page">Page {{ currentPage}}</label>
+            <button @click="nextPage">▶</button>
+            <input class="name-search" placeholder="Search store by name" v-model="nameSearch"/>
+        </div>
         <table class="styled-table">
             <thead>
             <tr>
@@ -37,9 +40,11 @@
             </tr>
             </tbody>
         </table>
-        <button @click="previousPage" :disabled="currentPage <= 1">◀</button>
-        <label class="page">Page {{ currentPage}}</label>
-        <button @click="nextPage">▶</button>
+        <div>
+            <button :disabled="currentPage <= 1" @click="previousPage">◀</button>
+            <label class="page">Page {{ currentPage}}</label>
+            <button @click="nextPage">▶</button>
+        </div>
     </section>
 
     <section class="detail" v-if="currentStore !== null">

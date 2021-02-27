@@ -93,3 +93,8 @@ body {
 .page {
     margin: 0 8px;
 }
+
+.name-search {
+    margin-left: 8px;
+    border-radius: 6px;
+}
