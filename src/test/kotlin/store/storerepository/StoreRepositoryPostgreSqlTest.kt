@@ -8,7 +8,10 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import store.domain.Store
+import store.domain.Store.Season.FIRST_HALF
+import store.domain.Store.Season.SECOND_HALF
 import store.domain.StoreInfo
+import store.domain.StoreSeason
 
 class StoreRepositoryPostgreSqlTest {
 
@@ -28,11 +31,9 @@ class StoreRepositoryPostgreSqlTest {
         type = "RETAIL",
     )
 
-
     @BeforeEach
     fun clear() {
         transaction(database) {
-            object : Table("store_extra_fields") {}.deleteAll()
             object : Table("stores") {}.deleteAll()
         }
     }
@@ -100,9 +101,54 @@ class StoreRepositoryPostgreSqlTest {
     }
 
     @Test
-    fun `ignores extra fields without a store`() {
+    fun `ignores extra fields that belongs to non-existent store`() {
         val storeRepository = StoreRepositoryPostgreSql(database)
 
         storeRepository.saveExtraField("101", "b", "3")
+    }
+
+    @Test
+    fun `saves a store season`() {
+        val storeRepository = StoreRepositoryPostgreSql(database)
+        storeRepository.saveInfo(storeInfo)
+
+        storeRepository.saveSeason(StoreSeason(
+            storeId = "101",
+            year = 2000,
+            season = SECOND_HALF,
+        ))
+        storeRepository.saveSeason(StoreSeason(
+            storeId = "101",
+            year = 2022,
+            season = FIRST_HALF,
+        ))
+
+        assertEquals(
+            Store(
+                id = "101",
+                name = "store 1",
+                description = null,
+                code = "code1",
+                openingDate = "2021-02-07",
+                type = "RETAIL",
+                operationalDuring = setOf(
+                    2000 to SECOND_HALF,
+                    2022 to FIRST_HALF,
+                )
+            ),
+            storeRepository.list(0).single()
+        )
+    }
+
+    @Test
+    fun `ignores a season for non-existent store`() {
+        val storeRepository = StoreRepositoryPostgreSql(database)
+        storeRepository.saveInfo(storeInfo)
+
+        storeRepository.saveSeason(StoreSeason(
+            storeId = "999",
+            year = 2022,
+            season = FIRST_HALF,
+        ))
     }
 }

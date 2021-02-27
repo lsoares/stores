@@ -4,7 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.node.ArrayNode
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
 import org.eclipse.jetty.http.HttpStatus
+import store.domain.Store.Season.FIRST_HALF
+import store.domain.Store.Season.SECOND_HALF
 import store.domain.StoreInfo
+import store.domain.StoreSeason
 import java.net.URI
 import java.net.http.HttpClient.newHttpClient
 import java.net.http.HttpRequest
@@ -31,7 +34,6 @@ class StoreProviderClient(private val baseUrl: String, private val apiKey: Strin
         object FailedToFetch : ListStoresResult()
     }
 
-
     private fun String.toStore() =
         (objectMapper.readTree(this) as ArrayNode).map {
             StoreInfo(
@@ -52,14 +54,34 @@ class StoreProviderClient(private val baseUrl: String, private val apiKey: Strin
 
         return httpClient.send(httpRequest.build(), ofString()).run {
             csvReader().readAllWithHeader(body().trim())
-                .mapNotNull { it ->
-                    val row = it.mapKeys { it.key.trim() }
-
+                .mapNotNull { row ->
+                    val trimmedRow = row.mapKeys { it.key.trim() }.mapValues { it.value.trim() }
                     StoreExtraFields(
-                        storeId = row["Store id"] ?: return@mapNotNull null,
-                        extraFields = row.filterNot { it.key == "Store id" }
+                        storeId = trimmedRow["Store id"] ?: return@mapNotNull null,
+                        extraFields = trimmedRow.filterNot { it.key == "Store id" }
                     )
                 }
+        }
+    }
+
+    fun listSeasons(): List<StoreSeason> {
+        val httpRequest = HttpRequest.newBuilder()
+            .uri(URI.create("$baseUrl/other/stores_and_seasons"))
+            .header("apiKey", apiKey)
+            .GET()
+
+        return httpClient.send(httpRequest.build(), ofString()).run {
+            (objectMapper.readTree(body()) as ArrayNode).mapNotNull {
+                StoreSeason(
+                    storeId = it["storeId"].intValue().toString(),
+                    year = 2000 + it["season"].asText().takeLast(2).toInt(),
+                    season = when (it["season"].asText().take(2)) {
+                        "H1" -> FIRST_HALF
+                        "H2" -> SECOND_HALF
+                        else -> return@mapNotNull null
+                    }
+                )
+            }
         }
     }
 

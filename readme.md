@@ -3,15 +3,13 @@
 ## TODO
 - List stores
   - paginate list of stores ✅
-  - load from local storage ✅
-  - worker to fetch data from APIs ✅
-  - upsert stores ✅
-  - worker to update previous rows ✅
+  - fetch data from APIs ✅
+  - page selector
 - View store details
   - show basic info ✅
   - view extra fields ✅
   - view seasons
-- Search stores
+- Search stores by name
 - Edit store name
 - ✨ Download CSV
 - ✨ Cron job for worker

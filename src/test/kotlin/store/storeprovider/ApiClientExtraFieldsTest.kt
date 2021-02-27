@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import store.storeprovider.StoreProviderClient.StoreExtraFields
 
-class ListStoresStoreExtraFieldsTest {
+class ApiClientExtraFieldsTest {
 
     private lateinit var fakeApi: Javalin
 
@@ -23,7 +23,7 @@ class ListStoresStoreExtraFieldsTest {
             it.result(
                 """
                     Store id,Special field 1, Special field 2
-                    1,a,b
+                    1,     a      ,b
                     4,,
                     29279500,"a, b, c",2
                 """.trimIndent()

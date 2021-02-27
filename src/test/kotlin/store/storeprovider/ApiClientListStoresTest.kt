@@ -9,7 +9,7 @@ import store.domain.Store
 import store.storeprovider.StoreProviderClient.ListStoresResult.FailedToFetch
 import store.storeprovider.StoreProviderClient.ListStoresResult.Valid
 
-class ListStoresTest {
+class ApiClientListStoresTest {
 
     private lateinit var fakeApi: Javalin
 

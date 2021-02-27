@@ -3,14 +3,20 @@ package store.storerepository
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import store.domain.Store
+import store.domain.Store.Season
 import store.domain.StoreInfo
 import store.domain.StoreRepository
+import store.domain.StoreSeason
 
 class StoreRepositoryPostgreSql(private val database: Database) : StoreRepository {
 
     init {
         transaction(database) {
-            SchemaUtils.createMissingTablesAndColumns(StoreSchema, StoreExtraFieldSchema)
+            SchemaUtils.createMissingTablesAndColumns(
+                StoreSchema,
+                StoreExtraFieldSchema,
+                StoreSeasonsSchema,
+            )
         }
     }
 
@@ -29,6 +35,12 @@ class StoreRepositoryPostgreSql(private val database: Database) : StoreRepositor
         val value = varchar("value", 150).nullable()
     }
 
+    private object StoreSeasonsSchema : Table("store_seasons") {
+        val storeId = varchar("id", 20).references(StoreSchema.id, onDelete = ReferenceOption.CASCADE).primaryKey()
+        val year = integer("year").primaryKey()
+        val season = varchar("season", 20).primaryKey()
+    }
+
     override fun list(page: Int) = transaction(database) {
         StoreSchema.selectAll()
             .orderBy(StoreSchema.id, SortOrder.DESC)
@@ -42,15 +54,21 @@ class StoreRepositoryPostgreSql(private val database: Database) : StoreRepositor
                     description = it[StoreSchema.description],
                     type = it[StoreSchema.type],
                     openingDate = it[StoreSchema.openingDate],
-                    extraFields = listExtraFields(storeId)
+                    extraFields = listExtraFields(storeId),
+                    operationalDuring = listSeasons(storeId),
                 )
             }
     }
 
     private fun listExtraFields(storeId: String) =
-        StoreExtraFieldSchema.select { StoreExtraFieldSchema.storeId eq storeId }.map {
-            it[StoreExtraFieldSchema.name] to it[StoreExtraFieldSchema.value]
-        }.toMap()
+        StoreExtraFieldSchema.select { StoreExtraFieldSchema.storeId eq storeId }
+            .map { it[StoreExtraFieldSchema.name] to it[StoreExtraFieldSchema.value] }
+            .toMap()
+
+    private fun listSeasons(storeId: String) =
+        StoreSeasonsSchema.select { StoreSeasonsSchema.storeId eq storeId }
+            .map { it[StoreSeasonsSchema.year] to Season.valueOf(it[StoreSeasonsSchema.season]) }
+            .toSet()
 
     override fun saveInfo(storeInfo: StoreInfo) {
         transaction(database) {
@@ -73,6 +91,18 @@ class StoreRepositoryPostgreSql(private val database: Database) : StoreRepositor
                 it[StoreExtraFieldSchema.storeId] = storeId
                 it[StoreExtraFieldSchema.name] = name
                 it[StoreExtraFieldSchema.value] = value
+            }
+        }
+    }
+
+    override fun saveSeason(storeSeason: StoreSeason) {
+        transaction(database) {
+            if (StoreSchema.select { StoreSchema.id eq storeSeason.storeId }.count() == 0) return@transaction
+
+            StoreSeasonsSchema.replace {
+                it[storeId] = storeSeason.storeId
+                it[season] = storeSeason.season.name
+                it[year] = storeSeason.year
             }
         }
     }

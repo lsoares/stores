@@ -6,32 +6,41 @@ import store.storeprovider.StoreProviderClient.ListStoresResult.Valid
 
 fun main() {
     with(RealConfig) {
-        importAllPages()
-        println("✅")
-        saveExtraFields()
+        println("Importing stores info 🏬…")
+        importStoresInfo()
+        println("\nImporting extra fields…")
+        importExtraFields()
+        println("Importing seasons…")
+        importSeasons()
         println("✅")
     }
 }
 
-private tailrec fun RealConfig.importAllPages(page: Int = 1) {
-    println("Importing page $page")
+private tailrec fun RealConfig.importStoresInfo(page: Int = 1) {
+    print(" $page")
     when (val result = storesProvider.listStores(page)) {
         is Valid -> {
             result.storeInfos.map(storesRepository::saveInfo)
-            if (result.storeInfos.isNotEmpty()) importAllPages(page + 1)
+            if (result.storeInfos.isNotEmpty()) importStoresInfo(page + 1)
         }
         is FailedToFetch -> {
-            println("\tfailed")
-            importAllPages(page + 1)
+            print("⚠️")
+            importStoresInfo(page + 1)
         }
     }
 }
 
-private fun RealConfig.saveExtraFields() {
-    println("Saving extra fields")
+private fun RealConfig.importExtraFields() {
     storesProvider.listSpecialFields().map { (storeId, extraFields) ->
         extraFields.forEach {
             storesRepository.saveExtraField(storeId, it.key, it.value)
         }
+    }
+}
+
+private fun RealConfig.importSeasons() {
+    storesProvider.listSeasons().mapIndexed { i, storeSeason ->
+        println("$i $storeSeason")
+        storesRepository.saveSeason(storeSeason)
     }
 }
