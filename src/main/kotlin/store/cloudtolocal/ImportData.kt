@@ -7,6 +7,9 @@ import store.storeprovider.StoreProviderClient.ListStoresResult.Valid
 fun main() {
     with(RealConfig) {
         importAllPages()
+        println("✅")
+        saveExtraFields()
+        println("✅")
     }
 }
 
@@ -20,6 +23,15 @@ private tailrec fun RealConfig.importAllPages(page: Int = 1) {
         is FailedToFetch -> {
             println("\tfailed")
             importAllPages(page + 1)
+        }
+    }
+}
+
+private fun RealConfig.saveExtraFields() {
+    println("Saving extra fields")
+    storesProvider.listSpecialFields().map { (storeId, extraFields) ->
+        extraFields.forEach {
+            storesRepository.saveExtraField(storeId, it.key, it.value)
         }
     }
 }

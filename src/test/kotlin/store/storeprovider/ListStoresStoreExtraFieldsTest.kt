@@ -38,21 +38,21 @@ class ListStoresStoreExtraFieldsTest {
             listOf(
                 StoreExtraFields(
                     storeId = "1",
-                    properties = mapOf(
+                    extraFields = mapOf(
                         "Special field 1" to "a",
                         "Special field 2" to "b",
                     ),
                 ),
                 StoreExtraFields(
                     storeId = "4",
-                    properties = mapOf(
+                    extraFields = mapOf(
                         "Special field 1" to "",
                         "Special field 2" to "",
                     ),
                 ),
                 StoreExtraFields(
                     storeId = "29279500",
-                    properties = mapOf(
+                    extraFields = mapOf(
                         "Special field 1" to "a, b, c",
                         "Special field 2" to "2",
                     ),

@@ -57,13 +57,13 @@ class StoreProviderClient(private val baseUrl: String, private val apiKey: Strin
 
                     StoreExtraFields(
                         storeId = row["Store id"] ?: return@mapNotNull null,
-                        properties = row.filterNot { it.key == "Store id" }
+                        extraFields = row.filterNot { it.key == "Store id" }
                     )
                 }
         }
     }
 
-    data class StoreExtraFields(val storeId: String, val properties: Map<String, String>)
+    data class StoreExtraFields(val storeId: String, val extraFields: Map<String, String>)
 }
 
 private val objectMapper = ObjectMapper()

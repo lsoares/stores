@@ -25,8 +25,8 @@ class StoreRepositoryPostgreSql(private val database: Database) : StoreRepositor
 
     private object StoreExtraFieldSchema : Table("store_extra_fields") {
         val storeId = varchar("id", 20).references(StoreSchema.id, onDelete = ReferenceOption.CASCADE).primaryKey()
-        val name = varchar("name", 100).primaryKey()
-        val value = varchar("value", 100).nullable()
+        val name = varchar("name", 80).primaryKey()
+        val value = varchar("value", 150).nullable()
     }
 
     override fun list(page: Int) = transaction(database) {
@@ -67,6 +67,8 @@ class StoreRepositoryPostgreSql(private val database: Database) : StoreRepositor
 
     override fun saveExtraField(storeId: String, name: String, value: String) {
         transaction(database) {
+            if (StoreSchema.select { StoreSchema.id eq storeId }.count() == 0) return@transaction
+
             StoreExtraFieldSchema.replace {
                 it[StoreExtraFieldSchema.storeId] = storeId
                 it[StoreExtraFieldSchema.name] = name

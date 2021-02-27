@@ -98,4 +98,11 @@ class StoreRepositoryPostgreSqlTest {
             storeRepository.list(0).single()
         )
     }
+
+    @Test
+    fun `ignores extra fields without a store`() {
+        val storeRepository = StoreRepositoryPostgreSql(database)
+
+        storeRepository.saveExtraField("101", "b", "3")
+    }
 }
