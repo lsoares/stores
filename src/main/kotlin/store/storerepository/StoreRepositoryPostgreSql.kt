@@ -24,6 +24,7 @@ class StoreRepositoryPostgreSql(private val database: Database) : StoreRepositor
     private object StoreSchema : Table("stores") {
         val id = varchar("id", 20).primaryKey()
         val name = varchar("name", 50).nullable()
+        val nameUserProvided = varchar("name_user_provided", 50).nullable()
         val description = varchar("description", 2000).nullable()
         val type = varchar("type", 40).nullable()
         val openingDate = varchar("opening_date", 10).nullable()
@@ -37,6 +38,24 @@ class StoreRepositoryPostgreSql(private val database: Database) : StoreRepositor
         val value = varchar("value", 150).nullable()
     }
 
+    override fun findById(storeId: String) =
+        transaction(database) {
+            StoreSchema.select {
+                StoreSchema.id eq storeId
+            }.map {
+                Store(
+                    id = it[StoreSchema.id],
+                    name = it[StoreSchema.nameUserProvided] ?: it[StoreSchema.name],
+                    code = it[StoreSchema.code],
+                    description = it[StoreSchema.description],
+                    type = it[StoreSchema.type],
+                    openingDate = it[StoreSchema.openingDate],
+                    extraFields = listExtraFields(it[StoreSchema.id]),
+                    seasons = it[StoreSchema.seasons]?.parseSeasons() ?: emptySet()
+                )
+            }.firstOrNull()
+        }
+
     override fun list(page: Int, nameSearch: String?) = transaction(database) {
         StoreSchema.selectAll()
             .orderBy(StoreSchema.id, SortOrder.DESC)
@@ -48,15 +67,14 @@ class StoreRepositoryPostgreSql(private val database: Database) : StoreRepositor
                     }
                 }
             }.map {
-                val storeId = it[StoreSchema.id]
                 Store(
-                    id = storeId,
-                    name = it[StoreSchema.name],
+                    id = it[StoreSchema.id],
+                    name = it[StoreSchema.nameUserProvided] ?: it[StoreSchema.name],
                     code = it[StoreSchema.code],
                     description = it[StoreSchema.description],
                     type = it[StoreSchema.type],
                     openingDate = it[StoreSchema.openingDate],
-                    extraFields = listExtraFields(storeId),
+                    extraFields = listExtraFields(it[StoreSchema.id]),
                     seasons = it[StoreSchema.seasons]?.parseSeasons() ?: emptySet()
                 )
             }
@@ -70,15 +88,26 @@ class StoreRepositoryPostgreSql(private val database: Database) : StoreRepositor
             .map { it[StoreExtraFieldSchema.name] to it[StoreExtraFieldSchema.value] }
             .toMap()
 
-    override fun saveInfo(storeInfo: StoreInfo) {
+    override fun saveInfo(storeInfo: StoreInfo) { // TODO should receive store
         transaction(database) {
-            StoreSchema.replace {
-                it[id] = storeInfo.id
-                it[name] = storeInfo.name
-                it[code] = storeInfo.code
-                it[description] = storeInfo.description
-                it[type] = storeInfo.type
-                it[openingDate] = storeInfo.openingDate
+            if (StoreSchema.select { StoreSchema.id eq storeInfo.id }.count() == 0) {
+                StoreSchema.insert {
+                    it[id] = storeInfo.id
+                    it[name] = storeInfo.name
+                    it[code] = storeInfo.code
+                    it[description] = storeInfo.description
+                    it[type] = storeInfo.type
+                    it[openingDate] = storeInfo.openingDate
+                }
+            } else {
+                StoreSchema.update({ StoreSchema.id eq storeInfo.id }) {
+                    it[id] = storeInfo.id
+                    it[name] = storeInfo.name
+                    it[code] = storeInfo.code
+                    it[description] = storeInfo.description
+                    it[type] = storeInfo.type
+                    it[openingDate] = storeInfo.openingDate
+                }
             }
         }
     }
@@ -97,10 +126,16 @@ class StoreRepositoryPostgreSql(private val database: Database) : StoreRepositor
 
     override fun saveSeasons(storeId: String, seasons: Set<String>) {
         transaction(database) {
-            if (StoreSchema.select { StoreSchema.id eq storeId }.count() == 0) return@transaction
-
             StoreSchema.update({ StoreSchema.id eq storeId }) {
                 it[StoreSchema.seasons] = SerialBlob(objectMapper.writeValueAsString(seasons).toByteArray())
+            }
+        }
+    }
+
+    override fun updateStoreName(storeId: String, newName: String) {
+        transaction(database) {
+            StoreSchema.update({ StoreSchema.id eq storeId }) {
+                it[nameUserProvided] = newName
             }
         }
     }

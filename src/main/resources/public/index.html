@@ -20,7 +20,8 @@
             <button :disabled="currentPage <= 1" @click="previousPage">◀</button>
             <label class="page">Page {{ currentPage}}</label>
             <button @click="nextPage">▶</button>
-            <input class="name-search" placeholder="Search store by name" v-model="nameSearch"/>
+            <input aria-label="Search store by name" class="name-search" placeholder="Search store by name"
+                   v-model="nameSearch"/>
         </div>
         <table class="styled-table">
             <thead>
@@ -48,7 +49,20 @@
     </section>
 
     <section class="detail" v-if="currentStore !== null">
-        <h2>{{ currentStore.name }}</h2>
+        <h2>
+            <span>{{ currentStore.name }}</span>
+            <span @click="newStoreName = currentStore.name" class="icon-button"
+                  title="Edit store name">
+                ✏️
+            </span>
+        </h2>
+
+        <form v-if="newStoreName !== null" v-on:submit.prevent="confirmStoreName(this.currentStore.id)">
+            <input aria-label="Edit store name" minlength="3" placeholder="New store name"
+                   required v-model="newStoreName"/>
+            <button class="icon-button" type="submit">Save</button>
+        </form>
+
         <span class="store-type">{{ currentStore.type }}</span>
         <label>Id.: <span>{{ currentStore.id }}</span></label>
         <label>Code: <span>{{ currentStore.code }}</span></label>

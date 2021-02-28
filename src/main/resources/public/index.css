@@ -42,7 +42,7 @@ body {
 }
 
 .detail h2 {
-    margin-top: 0;
+    margin: 0 0 8px 0;
 }
 
 .styled-table {
@@ -96,5 +96,16 @@ body {
 
 .name-search {
     margin-left: 8px;
+}
+
+input {
     border-radius: 6px;
+}
+
+.icon-button {
+    margin-left: 8px;
+}
+
+.icon-button:hover {
+    cursor: pointer;
 }

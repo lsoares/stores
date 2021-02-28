@@ -1,8 +1,7 @@
 package store.restapi
 
 import io.javalin.Javalin
-import io.javalin.apibuilder.ApiBuilder.get
-import io.javalin.apibuilder.ApiBuilder.path
+import io.javalin.apibuilder.ApiBuilder.*
 import io.javalin.core.JavalinConfig
 import io.javalin.http.staticfiles.Location
 import store.AppConfig
@@ -25,6 +24,7 @@ class App(appConfig: AppConfig) : AutoCloseable {
                 .routes {
                     path("stores") {
                         get(ListStoresHandler(listStores))
+                        patch(":id", SetStoreNameHandler(setStoreName))
                     }
                 }
                 .exception(Exception::class.java) { ex, _ ->

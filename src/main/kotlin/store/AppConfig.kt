@@ -2,6 +2,7 @@ package store
 
 import org.jetbrains.exposed.sql.Database
 import store.domain.ListStoresUseCase
+import store.domain.SetStoreNameUseCase
 import store.storeprovider.StoreProviderClient
 import store.storerepository.StoreRepositoryPostgreSql
 
@@ -14,6 +15,7 @@ abstract class AppConfig {
         )
     }
     open val listStores by lazy { ListStoresUseCase(storesRepository) }
+    open val setStoreName by lazy { SetStoreNameUseCase(storesRepository) }
 }
 
 object RealConfig : AppConfig() {

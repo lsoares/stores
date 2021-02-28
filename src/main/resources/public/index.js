@@ -4,17 +4,22 @@ const StoreList = {
             stores: [],
             currentStore: null,
             currentPage: 1,
-            nameSearch: '',
+            nameSearch: null,
+            newStoreName: null,
         }
     },
     watch: {
         nameSearch() {
             this.getStores()
             this.currentPage = 1
+            this.currentStore = null
         },
         currentPage() {
             this.currentStore = null
             this.getStores()
+        },
+        currentStore() {
+            this.newStoreName = null
         },
     },
     methods: {
@@ -33,11 +38,17 @@ const StoreList = {
                     }
                 })
                 .then(response => this.stores = response.data)
-        }
+        },
+        confirmStoreName(storeId) {
+            axios
+                .patch(`/stores/${storeId}`, {newName: this.newStoreName})
+                .then(this.getStores)
+            return false
+        },
     },
     mounted() {
         this.getStores()
-    }
+    },
 }
 
 Vue.createApp(StoreList).mount('#stores-app')

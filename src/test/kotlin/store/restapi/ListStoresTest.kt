@@ -21,6 +21,7 @@ class ListStoresTest {
         var requestedPage: Int? = null
         val fakeDeps = object : AppConfig() {
             override val storesRepository = object : StoreRepository {
+                override fun findById(storeId: String) = fail("no need to find")
                 override fun list(page: Int, nameSearch: String?): List<Store> {
                     requestedPage = page
                     return listOf(Store(
@@ -38,6 +39,7 @@ class ListStoresTest {
                 override fun saveInfo(storeInfo: StoreInfo) = fail("no need to save")
                 override fun saveExtraField(storeId: String, name: String, value: String) = fail("no need to save")
                 override fun saveSeasons(storeId: String, seasons: Set<String>) = fail("no need to save")
+                override fun updateStoreName(storeId: String, newName: String): Unit = fail("no need to save")
             }
         }
         App(fakeDeps).start(1234).use {

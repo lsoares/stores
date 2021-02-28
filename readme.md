@@ -9,7 +9,7 @@
   - view extra fields ✅
   - view seasons ✅
 - Search stores by name ✅
-- Edit store name
+- Edit store name ✅
 - ✨ Download CSV
 - ✨ Cron job for worker
 

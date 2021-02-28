@@ -62,15 +62,8 @@ class StoreRepositoryPostgreSqlTest {
         storeRepository.saveInfo(storeInfo.copy(description = "new description"))
 
         assertEquals(
-            Store(
-                id = "101",
-                name = "store 1",
-                description = "new description",
-                code = "code1",
-                openingDate = "2021-02-07",
-                type = "RETAIL",
-            ),
-            storeRepository.list(0).single()
+            "new description",
+            storeRepository.list(0).single().description
         )
     }
 
@@ -84,16 +77,8 @@ class StoreRepositoryPostgreSqlTest {
         storeRepository.saveExtraField("101", "b", "3")
 
         assertEquals(
-            Store(
-                id = "101",
-                name = "store 1",
-                description = null,
-                code = "code1",
-                openingDate = "2021-02-07",
-                type = "RETAIL",
-                extraFields = mapOf("a" to "1", "b" to "3")
-            ),
-            storeRepository.list(0).single()
+            mapOf("a" to "1", "b" to "3"),
+            storeRepository.list(0).single().extraFields
         )
     }
 
@@ -112,16 +97,8 @@ class StoreRepositoryPostgreSqlTest {
         storeRepository.saveSeasons("101", setOf("00 H2", "22 H2"))
 
         assertEquals(
-            Store(
-                id = "101",
-                name = "store 1",
-                description = null,
-                code = "code1",
-                openingDate = "2021-02-07",
-                type = "RETAIL",
-                seasons = setOf("00 H2", "22 H2"),
-            ),
-            storeRepository.list(0).single()
+            setOf("00 H2", "22 H2"),
+            storeRepository.list(0).single().seasons
         )
     }
 
@@ -150,6 +127,43 @@ class StoreRepositoryPostgreSqlTest {
                 type = "RETAIL",
             ),
             storeRepository.list(0, "Typical").single()
+        )
+    }
+
+    @Test
+    fun `updates store name`() {
+        val storeRepository = StoreRepositoryPostgreSql(database)
+        storeRepository.saveInfo(storeInfo.copy(name = "old name"))
+
+        storeRepository.updateStoreName("101", "new name")
+
+        assertEquals(
+            "new name",
+            storeRepository.findById("101")?.name
+        )
+    }
+
+    @Test
+    fun `ignores a non-existent store`() {
+        val storeRepository = StoreRepositoryPostgreSql(database)
+
+        storeRepository.updateStoreName("999", "new name")
+    }
+
+    @Test
+    fun `does not loose user provided name when updating it`() {
+        val storeRepository = StoreRepositoryPostgreSql(database)
+        storeRepository.saveInfo(storeInfo)
+        storeRepository.updateStoreName(storeInfo.id, "new name")
+        storeRepository.saveInfo(storeInfo.copy(name = "try overwriting name"))
+
+        assertEquals(
+            "new name",
+            storeRepository.findById("101")?.name
+        )
+        assertEquals(
+            "new name",
+            storeRepository.list(0).single().name
         )
     }
 }
