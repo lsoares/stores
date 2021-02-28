@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test
 import store.domain.StoreInfo
 import store.storeprovider.StoreProviderClient.ListStoresResult.FailedToFetch
 import store.storeprovider.StoreProviderClient.ListStoresResult.Valid
+import java.text.SimpleDateFormat
 
 class ApiClientListStoresTest {
 
@@ -42,6 +43,9 @@ class ApiClientListStoresTest {
                 "name": "store 2",
                 "openingDate": "2019-01-03",
                 "storeType": null
+              },
+              {
+                "id": 103
               }
             ]"""
             )
@@ -58,9 +62,8 @@ class ApiClientListStoresTest {
                 StoreInfo(
                     id = "101",
                     name = "store 1",
-                    description = null,
                     code = "code1",
-                    openingDate = "2021-02-07",
+                    openingDate = SimpleDateFormat("yyyy-MM-dd").parse("2021-02-07"),
                     type = "RETAIL",
                 ),
                 StoreInfo(
@@ -68,8 +71,10 @@ class ApiClientListStoresTest {
                     name = "store 2",
                     description = "desc 2",
                     code = "code2",
-                    openingDate = "2019-01-03",
-                    type = null,
+                    openingDate = SimpleDateFormat("yyyy-MM-dd").parse("2019-01-03"),
+                ),
+                StoreInfo(
+                    id = "103",
                 ),
             ),
             result.storeInfos

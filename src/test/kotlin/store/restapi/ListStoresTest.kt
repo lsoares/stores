@@ -13,6 +13,7 @@ import java.net.URI
 import java.net.http.HttpClient.newHttpClient
 import java.net.http.HttpRequest.newBuilder
 import java.net.http.HttpResponse.BodyHandlers.ofString
+import java.text.SimpleDateFormat
 
 class ListStoresTest {
 
@@ -21,14 +22,14 @@ class ListStoresTest {
         var requestedPage: Int? = null
         val fakeDeps = object : AppConfig() {
             override val storesRepository = object : StoreRepository {
-                override fun list(page: Int, nameSearch: String?): List<Store> {
+                override fun list(page: Int?, nameSearch: String?): List<Store> {
                     requestedPage = page
                     return listOf(Store(
                         id = "1234",
                         name = "Store 1",
                         description = "desc 1",
                         code = "code 1",
-                        openingDate = "date 1",
+                        openingDate = SimpleDateFormat("yyyy-MM-dd").parse("2000-12-31"),
                         type = "STORE TYPE 1",
                         extraFields = mapOf("ab" to "x", "xy" to "bla"),
                         seasons = setOf("2020 H1", "2002 H2"),
@@ -55,7 +56,7 @@ class ListStoresTest {
                          "name": "Store 1",
                          "description": "desc 1",
                          "code": "code 1",
-                         "openingDate": "date 1",
+                         "openingDate": "2000-12-31",
                          "type": "Store type 1",
                          "extraFields": {
                             "ab": "x", 

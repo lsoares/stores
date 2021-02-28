@@ -25,6 +25,7 @@ class App(appConfig: AppConfig) : AutoCloseable {
                     path("stores") {
                         get(ListStoresHandler(listStores))
                         patch(":id", SetStoreNameHandler(setStoreName))
+                        get("export.csv", GenerateCsvHandler(listStores))
                     }
                 }
                 .exception(Exception::class.java) { ex, _ ->

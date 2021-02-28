@@ -9,6 +9,7 @@ import java.net.URI
 import java.net.http.HttpClient.newHttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse.BodyHandlers.ofString
+import java.text.SimpleDateFormat
 
 class StoreProviderClient(private val baseUrl: String, private val apiKey: String) {
 
@@ -35,11 +36,13 @@ class StoreProviderClient(private val baseUrl: String, private val apiKey: Strin
         (objectMapper.readTree(this) as ArrayNode).map {
             StoreInfo(
                 id = it.get("id").intValue().toString(),
-                code = it.get("code").textValue()?.trim(),
-                description = it.get("description").textValue(),
-                name = it.get("name").textValue(),
-                openingDate = it.get("openingDate").textValue(),
-                type = it.get("storeType").textValue(),
+                code = it.get("code")?.textValue()?.trim(),
+                description = it.get("description")?.textValue(),
+                name = it.get("name")?.textValue(),
+                openingDate = it.get("openingDate")?.textValue()?.let {
+                    SimpleDateFormat("yyyy-MM-dd").parse(it)
+                },
+                type = it.get("storeType")?.textValue(),
             )
         }
 

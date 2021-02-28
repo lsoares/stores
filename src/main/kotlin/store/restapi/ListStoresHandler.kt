@@ -4,6 +4,8 @@ import io.javalin.http.Context
 import io.javalin.http.Handler
 import store.domain.ListStoresUseCase
 import store.domain.Store
+import java.text.SimpleDateFormat
+import java.util.*
 
 class ListStoresHandler(private val listStores: ListStoresUseCase) : Handler {
 
@@ -37,11 +39,14 @@ class ListStoresHandler(private val listStores: ListStoresUseCase) : Handler {
         val name: String?,
         val code: String?,
         val description: String?,
-        val openingDate: String?,
+        openingDate: Date?,
         val extraFields: Map<String, String?>,
         val seasons: Set<String>, // TODO improve string representation
         type: String?,
     ) {
         val type = type?.toLowerCase()?.capitalize()
+        val openingDate: String? = openingDate?.let { dateFormat.format(it) }
     }
 }
+
+private val dateFormat = SimpleDateFormat("yyyy-MM-dd")

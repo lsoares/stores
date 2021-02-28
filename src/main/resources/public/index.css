@@ -104,6 +104,9 @@ input {
 
 .icon-button {
     margin-left: 8px;
+    width: 24px;
+    height: 24px;
+    vertical-align: middle;
 }
 
 .icon-button:hover {

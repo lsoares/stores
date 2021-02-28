@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.joda.time.DateTime
 import store.domain.Store
 import store.domain.StoreInfo
 import store.domain.StoreRepository
@@ -27,7 +28,7 @@ class StoreRepositoryPostgreSql(private val database: Database) : StoreRepositor
         val customName = varchar("custom_name", 50).nullable()
         val description = varchar("description", 2000).nullable()
         val type = varchar("type", 40).nullable()
-        val openingDate = varchar("opening_date", 10).nullable()
+        val openingDate = date("opening_date").nullable()
         val code = varchar("code", 70).nullable()
         val seasons = blob("seasons_json").nullable()
     }
@@ -38,11 +39,13 @@ class StoreRepositoryPostgreSql(private val database: Database) : StoreRepositor
         val value = varchar("value", 150).nullable()
     }
 
-    override fun list(page: Int, nameSearch: String?) = transaction(database) {
+    override fun list(page: Int?, nameSearch: String?) = transaction(database) {
         StoreSchema.selectAll()
-            .orderBy(StoreSchema.id, SortOrder.DESC)
-            .limit(10, page * 10)
+            .orderBy(StoreSchema.openingDate, SortOrder.DESC)
             .apply {
+                page?.let {
+                    limit(10, page * 10)
+                }
                 nameSearch?.takeUnless(String::isBlank)?.let {
                     adjustWhere {
                         Op.build { StoreSchema.name.lowerCase() like "%$it%".toLowerCase() }
@@ -55,7 +58,7 @@ class StoreRepositoryPostgreSql(private val database: Database) : StoreRepositor
                     code = it[StoreSchema.code],
                     description = it[StoreSchema.description],
                     type = it[StoreSchema.type],
-                    openingDate = it[StoreSchema.openingDate],
+                    openingDate = it[StoreSchema.openingDate]?.toDate(),
                     extraFields = listExtraFields(it[StoreSchema.id]),
                     seasons = it[StoreSchema.seasons]?.parseSeasons() ?: emptySet()
                 )
@@ -79,7 +82,7 @@ class StoreRepositoryPostgreSql(private val database: Database) : StoreRepositor
                     it[code] = storeInfo.code
                     it[description] = storeInfo.description
                     it[type] = storeInfo.type
-                    it[openingDate] = storeInfo.openingDate
+                    it[openingDate] = storeInfo.openingDate?.let { DateTime(it) }
                 }
             } else {
                 StoreSchema.update({ StoreSchema.id eq storeInfo.id }) {
@@ -88,7 +91,7 @@ class StoreRepositoryPostgreSql(private val database: Database) : StoreRepositor
                     it[code] = storeInfo.code
                     it[description] = storeInfo.description
                     it[type] = storeInfo.type
-                    it[openingDate] = storeInfo.openingDate
+                    it[openingDate] = storeInfo.openingDate?.let { DateTime(it) }
                 }
             }
         }

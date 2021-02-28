@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import store.domain.Store
 import store.domain.StoreInfo
+import java.text.SimpleDateFormat
 
 class StoreRepositoryPostgreSqlTest {
 
@@ -19,12 +20,14 @@ class StoreRepositoryPostgreSqlTest {
         password = "abcde123_test"
     )
 
+    private val storeRepository = StoreRepositoryPostgreSql(database)
+
     private val storeInfo = StoreInfo(
         id = "101",
         name = "store 1",
         description = null,
         code = "code1",
-        openingDate = "2021-02-07",
+        openingDate = SimpleDateFormat("yyyy-MM-dd").parse("2021-02-07"),
         type = "RETAIL",
     )
 
@@ -37,8 +40,6 @@ class StoreRepositoryPostgreSqlTest {
 
     @Test
     fun `saves a new store info`() {
-        val storeRepository = StoreRepositoryPostgreSql(database)
-
         storeRepository.saveInfo(storeInfo)
 
         assertEquals(
@@ -47,7 +48,8 @@ class StoreRepositoryPostgreSqlTest {
                 name = "store 1",
                 description = null,
                 code = "code1",
-                openingDate = "2021-02-07",
+                openingDate = SimpleDateFormat("yyyy-MM-dd")
+                    .parse("2021-02-07"),
                 type = "RETAIL",
             ),
             storeRepository.list(0).single()
@@ -56,7 +58,6 @@ class StoreRepositoryPostgreSqlTest {
 
     @Test
     fun `updates an existent store info`() {
-        val storeRepository = StoreRepositoryPostgreSql(database)
         storeRepository.saveInfo(storeInfo)
 
         storeRepository.saveInfo(storeInfo.copy(description = "new description"))
@@ -69,7 +70,6 @@ class StoreRepositoryPostgreSqlTest {
 
     @Test
     fun `saves store extra fields`() {
-        val storeRepository = StoreRepositoryPostgreSql(database)
         storeRepository.saveInfo(storeInfo)
 
         storeRepository.saveExtraField("101", "a", "1")
@@ -84,14 +84,11 @@ class StoreRepositoryPostgreSqlTest {
 
     @Test
     fun `ignores extra fields that belongs to non-existent store`() {
-        val storeRepository = StoreRepositoryPostgreSql(database)
-
         storeRepository.saveExtraField("101", "b", "3")
     }
 
     @Test
     fun `saves a store season`() {
-        val storeRepository = StoreRepositoryPostgreSql(database)
         storeRepository.saveInfo(storeInfo)
 
         storeRepository.saveSeasons("101", setOf("00 H2", "22 H2"))
@@ -104,7 +101,6 @@ class StoreRepositoryPostgreSqlTest {
 
     @Test
     fun `ignores a season for non-existent store`() {
-        val storeRepository = StoreRepositoryPostgreSql(database)
         storeRepository.saveInfo(storeInfo)
 
         storeRepository.saveSeasons("999", setOf("2020 H2"))
@@ -112,8 +108,6 @@ class StoreRepositoryPostgreSqlTest {
 
     @Test
     fun `searches by text`() {
-        val storeRepository = StoreRepositoryPostgreSql(database)
-
         storeRepository.saveInfo(storeInfo.copy(name = "A Typical Store Name"))
         storeRepository.saveInfo(storeInfo.copy(id = "321", name = "other store"))
 
@@ -123,7 +117,8 @@ class StoreRepositoryPostgreSqlTest {
                 name = "A Typical Store Name",
                 description = null,
                 code = "code1",
-                openingDate = "2021-02-07",
+                openingDate = SimpleDateFormat("yyyy-MM-dd")
+                    .parse("2021-02-07"),
                 type = "RETAIL",
             ),
             storeRepository.list(0, "Typical").single()
@@ -132,7 +127,6 @@ class StoreRepositoryPostgreSqlTest {
 
     @Test
     fun `updates store name`() {
-        val storeRepository = StoreRepositoryPostgreSql(database)
         storeRepository.saveInfo(storeInfo.copy(name = "old name"))
 
         storeRepository.setCustomStoreName("101", "new name")
@@ -145,14 +139,11 @@ class StoreRepositoryPostgreSqlTest {
 
     @Test
     fun `ignores a non-existent store`() {
-        val storeRepository = StoreRepositoryPostgreSql(database)
-
         storeRepository.setCustomStoreName("999", "new name")
     }
 
     @Test
     fun `does not loose user provided name when updating it`() {
-        val storeRepository = StoreRepositoryPostgreSql(database)
         storeRepository.saveInfo(storeInfo)
         storeRepository.setCustomStoreName(storeInfo.id, "new name")
         storeRepository.saveInfo(storeInfo.copy(name = "try overwriting name"))
