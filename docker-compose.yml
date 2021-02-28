@@ -3,11 +3,11 @@ services:
   restapi:
     build: .
     ports:
-      - 8081:8081
+      - 8080:8080
     environment:
       API_BASE_URL: http://134.209.29.209
       API_KEY: 76a325g7g2ahs7h4673aa25s47632h5362a4532642
-      API_PORT: 8081
+      API_PORT: 8080
       DATABASE_URL: jdbc:postgresql://database:5432/stores_db
       DATABASE_USER: kotlin_app
       DATABASE_PASSWORD: abcde123

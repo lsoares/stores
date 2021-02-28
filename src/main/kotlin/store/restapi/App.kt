@@ -11,7 +11,7 @@ fun main() {
     App(RealConfig).start(apiPort)
 }
 
-private val apiPort get() = System.getenv("API_PORT")?.toInt() ?: 8080
+private val apiPort get() = System.getenv("API_PORT")?.toInt() ?: 8081
 
 class App(appConfig: AppConfig) : AutoCloseable {
 
