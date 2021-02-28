@@ -10,8 +10,8 @@ abstract class AppConfig {
     abstract val storesRepository: store.domain.StoreRepository
     val storesProvider by lazy {
         StoreProviderClient(
-            baseUrl = System.getenv("API_BASE_URL"),
-            apiKey = System.getenv("API_KEY"),
+            baseUrl = System.getenv("STORES_API_BASE_URL"),
+            apiKey = System.getenv("STORES_API_KEY"),
         )
     }
     open val listStores by lazy { ListStoresUseCase(storesRepository) }
