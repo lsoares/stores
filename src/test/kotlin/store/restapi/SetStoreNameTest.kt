@@ -21,7 +21,6 @@ class SetStoreNameTest {
         var usedStoreId: String? = null
         val fakeDeps = object : AppConfig() {
             override val storesRepository = object : StoreRepository {
-                override fun findById(storeId: String) = fail("no need to find")
                 override fun list(page: Int, nameSearch: String?) = fail("no need to list")
                 override fun saveInfo(storeInfo: StoreInfo) = fail("no need to save")
                 override fun saveExtraField(storeId: String, name: String, value: String) = fail("no need to save")

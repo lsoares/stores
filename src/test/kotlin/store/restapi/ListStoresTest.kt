@@ -21,7 +21,6 @@ class ListStoresTest {
         var requestedPage: Int? = null
         val fakeDeps = object : AppConfig() {
             override val storesRepository = object : StoreRepository {
-                override fun findById(storeId: String) = fail("no need to find")
                 override fun list(page: Int, nameSearch: String?): List<Store> {
                     requestedPage = page
                     return listOf(Store(

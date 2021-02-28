@@ -38,24 +38,6 @@ class StoreRepositoryPostgreSql(private val database: Database) : StoreRepositor
         val value = varchar("value", 150).nullable()
     }
 
-    override fun findById(storeId: String) =
-        transaction(database) {
-            StoreSchema.select {
-                StoreSchema.id eq storeId
-            }.map {
-                Store(
-                    id = it[StoreSchema.id],
-                    name = it[StoreSchema.nameUserProvided] ?: it[StoreSchema.name],
-                    code = it[StoreSchema.code],
-                    description = it[StoreSchema.description],
-                    type = it[StoreSchema.type],
-                    openingDate = it[StoreSchema.openingDate],
-                    extraFields = listExtraFields(it[StoreSchema.id]),
-                    seasons = it[StoreSchema.seasons]?.parseSeasons() ?: emptySet()
-                )
-            }.firstOrNull()
-        }
-
     override fun list(page: Int, nameSearch: String?) = transaction(database) {
         StoreSchema.selectAll()
             .orderBy(StoreSchema.id, SortOrder.DESC)

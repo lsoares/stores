@@ -139,7 +139,7 @@ class StoreRepositoryPostgreSqlTest {
 
         assertEquals(
             "new name",
-            storeRepository.findById("101")?.name
+            storeRepository.list(0).single().name
         )
     }
 
@@ -157,10 +157,6 @@ class StoreRepositoryPostgreSqlTest {
         storeRepository.updateStoreName(storeInfo.id, "new name")
         storeRepository.saveInfo(storeInfo.copy(name = "try overwriting name"))
 
-        assertEquals(
-            "new name",
-            storeRepository.findById("101")?.name
-        )
         assertEquals(
             "new name",
             storeRepository.list(0).single().name
