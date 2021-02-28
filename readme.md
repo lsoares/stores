@@ -14,6 +14,7 @@
 - ✨ Cron job for worker
 
 - Nice to have
+  - don't deploy jar - mount volume only
   - page selector
   - better seasons display
 

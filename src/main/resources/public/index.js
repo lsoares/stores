@@ -18,7 +18,8 @@ const StoreList = {
             this.currentStore = null
             this.getStores()
         },
-        currentStore() {
+        currentStore(val) {
+            if (val.name === null) val.name = '';
             this.newStoreName = null
         },
     },
