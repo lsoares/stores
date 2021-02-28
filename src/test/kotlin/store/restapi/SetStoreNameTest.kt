@@ -25,7 +25,7 @@ class SetStoreNameTest {
                 override fun saveInfo(storeInfo: StoreInfo) = fail("no need to save")
                 override fun saveExtraField(storeId: String, name: String, value: String) = fail("no need to save")
                 override fun saveSeasons(storeId: String, seasons: Set<String>) = fail("no need to save")
-                override fun updateStoreName(storeId: String, newName: String) {
+                override fun setCustomStoreName(storeId: String, newName: String) {
                     usedStoreId = storeId
                     savedNewName = newName
                 }

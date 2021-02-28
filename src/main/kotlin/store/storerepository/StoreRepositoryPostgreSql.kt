@@ -24,7 +24,7 @@ class StoreRepositoryPostgreSql(private val database: Database) : StoreRepositor
     private object StoreSchema : Table("stores") {
         val id = varchar("id", 20).primaryKey()
         val name = varchar("name", 50).nullable()
-        val nameUserProvided = varchar("name_user_provided", 50).nullable()
+        val customName = varchar("custom_name", 50).nullable()
         val description = varchar("description", 2000).nullable()
         val type = varchar("type", 40).nullable()
         val openingDate = varchar("opening_date", 10).nullable()
@@ -51,7 +51,7 @@ class StoreRepositoryPostgreSql(private val database: Database) : StoreRepositor
             }.map {
                 Store(
                     id = it[StoreSchema.id],
-                    name = it[StoreSchema.nameUserProvided] ?: it[StoreSchema.name],
+                    name = it[StoreSchema.customName] ?: it[StoreSchema.name],
                     code = it[StoreSchema.code],
                     description = it[StoreSchema.description],
                     type = it[StoreSchema.type],
@@ -114,10 +114,10 @@ class StoreRepositoryPostgreSql(private val database: Database) : StoreRepositor
         }
     }
 
-    override fun updateStoreName(storeId: String, newName: String) {
+    override fun setCustomStoreName(storeId: String, newName: String) {
         transaction(database) {
             StoreSchema.update({ StoreSchema.id eq storeId }) {
-                it[nameUserProvided] = newName
+                it[customName] = newName
             }
         }
     }

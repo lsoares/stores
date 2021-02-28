@@ -135,7 +135,7 @@ class StoreRepositoryPostgreSqlTest {
         val storeRepository = StoreRepositoryPostgreSql(database)
         storeRepository.saveInfo(storeInfo.copy(name = "old name"))
 
-        storeRepository.updateStoreName("101", "new name")
+        storeRepository.setCustomStoreName("101", "new name")
 
         assertEquals(
             "new name",
@@ -147,14 +147,14 @@ class StoreRepositoryPostgreSqlTest {
     fun `ignores a non-existent store`() {
         val storeRepository = StoreRepositoryPostgreSql(database)
 
-        storeRepository.updateStoreName("999", "new name")
+        storeRepository.setCustomStoreName("999", "new name")
     }
 
     @Test
     fun `does not loose user provided name when updating it`() {
         val storeRepository = StoreRepositoryPostgreSql(database)
         storeRepository.saveInfo(storeInfo)
-        storeRepository.updateStoreName(storeInfo.id, "new name")
+        storeRepository.setCustomStoreName(storeInfo.id, "new name")
         storeRepository.saveInfo(storeInfo.copy(name = "try overwriting name"))
 
         assertEquals(

@@ -5,5 +5,5 @@ interface StoreRepository {
     fun saveInfo(storeInfo: StoreInfo)
     fun saveExtraField(storeId: String, name: String, value: String)
     fun saveSeasons(storeId: String, seasons: Set<String>)
-    fun updateStoreName(storeId: String, newName: String)
+    fun setCustomStoreName(storeId: String, newName: String)
 }
