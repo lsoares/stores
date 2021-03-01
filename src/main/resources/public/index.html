@@ -19,6 +19,7 @@
         <div>
             <button :disabled="currentPage <= 1" @click="previousPage">◀</button>
             <label class="page">Page {{ currentPage}}</label>
+            <!-- TODO: page selector-->
             <button @click="nextPage">▶</button>
             <input aria-label="Search store by name" class="name-search" placeholder="Search store by name"
                    v-model="nameSearch"/>
