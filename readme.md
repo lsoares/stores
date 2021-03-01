@@ -11,7 +11,7 @@
 - Search stores by name ✅
 - Edit store name ✅
 - ✨ Download CSV ✅
-- ✨ Cron job for worker
+- ✨ Cron job for auto-importer ✅
 
 ## Usage
 
