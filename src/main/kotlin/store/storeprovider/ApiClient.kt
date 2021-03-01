@@ -47,6 +47,7 @@ class StoreProviderClient(private val baseUrl: String, private val apiKey: Strin
         }
 
     fun listSpecialFields(): List<StoreExtraFields> {
+        // TODO: deal with != 200
         val httpRequest = HttpRequest.newBuilder()
             .uri(URI.create("$baseUrl/extra_data.csv"))
             .header("apiKey", apiKey)
@@ -65,6 +66,7 @@ class StoreProviderClient(private val baseUrl: String, private val apiKey: Strin
     }
 
     fun listSeasons(): Map<String, Set<String>> {
+        // TODO: deal with != 200
         val httpRequest = HttpRequest.newBuilder()
             .uri(URI.create("$baseUrl/other/stores_and_seasons"))
             .header("apiKey", apiKey)
