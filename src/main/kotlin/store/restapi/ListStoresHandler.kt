@@ -22,7 +22,7 @@ class ListStoresHandler(private val listStores: ListStoresUseCase) : Handler {
     private fun List<Store>.toRepresenter() =
         map {
             StoreRepresenter(
-                id = it.id,
+                id = it.externalId,
                 name = it.name,
                 code = it.code,
                 description = it.description,

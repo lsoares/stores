@@ -112,3 +112,7 @@ input {
 .icon-button:hover {
     cursor: pointer;
 }
+
+.export-to-csv {
+    margin-left: 80px;
+}

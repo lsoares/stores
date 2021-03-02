@@ -28,7 +28,7 @@ class StoreProviderClient(private val baseUrl: String, private val apiKey: Strin
     private fun String.toStores() =
         (objectMapper.readTree(this) as ArrayNode).map {
             StoreInfo(
-                id = it.get("id").intValue().toString(),
+                externalId = it.get("id").intValue().toString(),
                 code = it.get("code")?.textValue()?.trim(),
                 description = it.get("description")?.textValue(),
                 name = it.get("name")?.textValue(),

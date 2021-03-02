@@ -3,6 +3,7 @@ package store.storerepository
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.ReferenceOption.CASCADE
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.joda.time.DateTime
 import store.domain.Store
@@ -24,7 +25,8 @@ class StoreRepositoryPostgreSql(private val database: Database) : StoreRepositor
     }
 
     private object StoreSchema : Table("stores") {
-        val id = varchar("id", 20).primaryKey() // TODO: rename to external_id
+        val id = integer("id").autoIncrement().primaryKey()
+        val externalId = varchar("external_id", 20).uniqueIndex()
         val name = varchar("name", 50).nullable()
         val customName = bool("custom_name").nullable()
         val description = varchar("description", 2000).nullable()
@@ -35,7 +37,7 @@ class StoreRepositoryPostgreSql(private val database: Database) : StoreRepositor
     }
 
     private object StoreExtraFieldSchema : Table("store_extra_fields") {
-        val storeId = varchar("id", 20).references(StoreSchema.id, onDelete = ReferenceOption.CASCADE).primaryKey()
+        val storeId = varchar("id", 20).references(StoreSchema.externalId, onDelete = CASCADE).primaryKey()
         val name = varchar("name", 80).primaryKey()
         val value = varchar("value", 150).nullable()
     }
@@ -55,12 +57,13 @@ class StoreRepositoryPostgreSql(private val database: Database) : StoreRepositor
             }.map {
                 Store(
                     id = it[StoreSchema.id],
+                    externalId = it[StoreSchema.externalId],
                     name = it[StoreSchema.name],
                     code = it[StoreSchema.code],
                     description = it[StoreSchema.description],
                     type = it[StoreSchema.type],
                     openingDate = it[StoreSchema.openingDate]?.toDate(),
-                    extraFields = listExtraFields(it[StoreSchema.id]),
+                    extraFields = listExtraFields(it[StoreSchema.externalId]),
                     seasons = it[StoreSchema.seasons]?.parseSeasons() ?: emptySet()
                 )
             }
@@ -76,11 +79,11 @@ class StoreRepositoryPostgreSql(private val database: Database) : StoreRepositor
 
     override fun saveInfo(storeInfo: StoreInfo) {
         transaction(database) {
-            val store = StoreSchema.select { StoreSchema.id eq storeInfo.id }.singleOrNull()
+            val store = StoreSchema.select { StoreSchema.externalId eq storeInfo.externalId }.singleOrNull()
 
             if (store == null) {
                 StoreSchema.insert {
-                    it[id] = storeInfo.id
+                    it[externalId] = storeInfo.externalId
                     it[name] = storeInfo.name
                     it[code] = storeInfo.code
                     it[description] = storeInfo.description
@@ -88,7 +91,7 @@ class StoreRepositoryPostgreSql(private val database: Database) : StoreRepositor
                     it[openingDate] = storeInfo.openingDate?.let { DateTime(it) }
                 }
             } else {
-                StoreSchema.update({ StoreSchema.id eq storeInfo.id }) {
+                StoreSchema.update({ StoreSchema.externalId eq storeInfo.externalId }) {
                     if (store[customName] != true)
                         it[name] = storeInfo.name
                     it[code] = storeInfo.code
@@ -102,7 +105,7 @@ class StoreRepositoryPostgreSql(private val database: Database) : StoreRepositor
 
     override fun saveExtraField(storeId: String, name: String, value: String) {
         transaction(database) {
-            if (StoreSchema.select { StoreSchema.id eq storeId }.count() == 0) return@transaction
+            if (StoreSchema.select { StoreSchema.externalId eq storeId }.count() == 0) return@transaction
 
             StoreExtraFieldSchema.replace {
                 it[StoreExtraFieldSchema.storeId] = storeId
@@ -114,7 +117,7 @@ class StoreRepositoryPostgreSql(private val database: Database) : StoreRepositor
 
     override fun saveSeasons(storeId: String, seasons: Set<String>) {
         transaction(database) {
-            StoreSchema.update({ StoreSchema.id eq storeId }) {
+            StoreSchema.update({ StoreSchema.externalId eq storeId }) {
                 it[StoreSchema.seasons] = SerialBlob(objectMapper.writeValueAsString(seasons).toByteArray())
             }
         }
@@ -122,7 +125,7 @@ class StoreRepositoryPostgreSql(private val database: Database) : StoreRepositor
 
     override fun setCustomStoreName(storeId: String, newName: String) {
         transaction(database) {
-            StoreSchema.update({ StoreSchema.id eq storeId }) {
+            StoreSchema.update({ StoreSchema.externalId eq storeId }) {
                 it[name] = newName
                 it[customName] = true
             }

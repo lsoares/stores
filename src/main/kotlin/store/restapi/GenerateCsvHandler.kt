@@ -17,7 +17,7 @@ class GenerateCsvHandler(private val listStores: ListStoresUseCase) : Handler {
                     +
                     listStores().map {
                         listOf(
-                            it.id,
+                            it.externalId,
                             it.type,
                             it.name,
                             it.code,

@@ -23,7 +23,7 @@ class StoreRepositoryPostgreSqlTest {
     private val storeRepository = StoreRepositoryPostgreSql(database)
 
     private val storeInfo = StoreInfo(
-        id = "101",
+        externalId = "101",
         name = "store 1",
         description = null,
         code = "code1",
@@ -44,7 +44,8 @@ class StoreRepositoryPostgreSqlTest {
 
         assertEquals(
             Store(
-                id = "101",
+                id = 1,
+                externalId = "101",
                 name = "store 1",
                 description = null,
                 code = "code1",
@@ -52,7 +53,7 @@ class StoreRepositoryPostgreSqlTest {
                     .parse("2021-02-07"),
                 type = "RETAIL",
             ),
-            storeRepository.list(0).single()
+            storeRepository.list(0).single().copy(id = 1)
         )
     }
 
@@ -71,7 +72,7 @@ class StoreRepositoryPostgreSqlTest {
     @Test
     fun `updates an existent store info but leaves name intact if it was changed by user`() {
         storeRepository.saveInfo(storeInfo)
-        storeRepository.setCustomStoreName(storeInfo.id, "custom name")
+        storeRepository.setCustomStoreName(storeInfo.externalId, "custom name")
 
         storeRepository.saveInfo(storeInfo.copy(name = "try override"))
 
@@ -122,19 +123,13 @@ class StoreRepositoryPostgreSqlTest {
     @Test
     fun `searches by text`() {
         storeRepository.saveInfo(storeInfo.copy(name = "A Typical Store Name"))
-        storeRepository.saveInfo(storeInfo.copy(id = "321", name = "other store"))
+        storeRepository.saveInfo(storeInfo.copy(externalId = "321", name = "other store"))
+
+        val list = storeRepository.list(0, "typical")
 
         assertEquals(
-            Store(
-                id = "101",
-                name = "A Typical Store Name",
-                description = null,
-                code = "code1",
-                openingDate = SimpleDateFormat("yyyy-MM-dd")
-                    .parse("2021-02-07"),
-                type = "RETAIL",
-            ),
-            storeRepository.list(0, "Typical").single()
+            "A Typical Store Name",
+            list.single().name
         )
     }
 

@@ -58,21 +58,21 @@ class ApiClientListStoresTest {
         assertEquals(
             listOf(
                 StoreInfo(
-                    id = "101",
+                    externalId = "101",
                     name = "store 1",
                     code = "code1",
                     openingDate = SimpleDateFormat("yyyy-MM-dd").parse("2021-02-07"),
                     type = "RETAIL",
                 ),
                 StoreInfo(
-                    id = "102",
+                    externalId = "102",
                     name = "store 2",
                     description = "desc 2",
                     code = "code2",
                     openingDate = SimpleDateFormat("yyyy-MM-dd").parse("2019-01-03"),
                 ),
                 StoreInfo(
-                    id = "103",
+                    externalId = "103",
                 ),
             ),
             result
