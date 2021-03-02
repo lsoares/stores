@@ -76,7 +76,7 @@ class StoreProviderClient(private val baseUrl: String, private val apiKey: Strin
                 it["storeId"].intValue().toString()
             }.mapValues {
                 it.value.map {
-                    it["season"].asText()
+                    it["season"].textValue()
                 }.toSet()
             }.toMap()
         }
