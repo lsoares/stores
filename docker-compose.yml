@@ -15,6 +15,7 @@ services:
       WAIT_HOSTS: database:5432
     depends_on:
       - database
+    restart: on-failure:3
 
   worker:
     container_name: worker
