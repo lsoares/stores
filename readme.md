@@ -57,3 +57,6 @@ Run `./test.sh` so that the whole suite of tests is run.
   make the importer faster. There could exist a retry mechanism, but it's not worth it since the job runs every hour.
 - Although this was not totally lean, I decided to have internal and external store ids, to decouple them and not have
   any dependency to external systems on the internal entities.
+- For the sake of simplicity, I used the store repository directly in the importer. This is wrong according to the clean
+  architecture. I should have created use cases in the middle which own the business logic (e.g. validations as in
+  SetStoreNameUseCase).
