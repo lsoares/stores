@@ -44,7 +44,7 @@ class StoreRepositoryPostgreSqlTest {
 
         assertEquals(
             Store(
-                id = 1,
+                id = "1",
                 externalId = "101",
                 name = "store 1",
                 description = null,
@@ -53,7 +53,7 @@ class StoreRepositoryPostgreSqlTest {
                     .parse("2021-02-07"),
                 type = "RETAIL",
             ),
-            storeRepository.list(0).single().copy(id = 1)
+            storeRepository.list(0).single().copy(id = "1")
         )
     }
 

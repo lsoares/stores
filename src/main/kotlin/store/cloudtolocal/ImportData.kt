@@ -11,7 +11,7 @@ fun main() {
         runCatching {
             RealConfig.importAllData()
         }.onFailure {
-            println("Error in job")
+            println("🚨 Error in job")
             it.printStackTrace()
         }
     }, 0, 1, TimeUnit.HOURS)

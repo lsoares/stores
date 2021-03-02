@@ -10,6 +10,7 @@ import store.domain.Store
 import store.domain.StoreInfo
 import store.domain.StoreRepository
 import java.sql.Blob
+import java.util.*
 import javax.sql.rowset.serial.SerialBlob
 
 // TODO should be dealing with real entities only
@@ -25,7 +26,7 @@ class StoreRepositoryPostgreSql(private val database: Database) : StoreRepositor
     }
 
     private object StoreSchema : Table("stores") {
-        val id = integer("id").autoIncrement().primaryKey()
+        val id = varchar("id", 36).primaryKey()
         val externalId = varchar("external_id", 20).uniqueIndex()
         val name = varchar("name", 50).nullable()
         val customName = bool("custom_name").nullable()
@@ -83,6 +84,7 @@ class StoreRepositoryPostgreSql(private val database: Database) : StoreRepositor
 
             if (store == null) {
                 StoreSchema.insert {
+                    it[id] = UUID.randomUUID().toString()
                     it[externalId] = storeInfo.externalId
                     it[name] = storeInfo.name
                     it[code] = storeInfo.code

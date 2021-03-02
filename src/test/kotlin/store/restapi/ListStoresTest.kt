@@ -25,7 +25,7 @@ class ListStoresTest {
                 override fun list(page: Int?, nameSearch: String?): List<Store> {
                     requestedPage = page
                     return listOf(Store(
-                        id = 1,
+                        id = "id1",
                         externalId = "1234",
                         name = "Store 1",
                         description = "desc 1",

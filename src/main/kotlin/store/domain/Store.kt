@@ -3,7 +3,7 @@ package store.domain
 import java.util.*
 
 data class Store(
-    val id: Int,
+    val id: String,
     val externalId: String,
     val code: String?,
     val description: String?,
