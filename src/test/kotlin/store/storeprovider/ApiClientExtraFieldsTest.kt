@@ -4,6 +4,7 @@ import io.javalin.Javalin
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import store.storeprovider.StoreProviderClient.StoreExtraFields
 
 class ApiClientExtraFieldsTest {
@@ -60,5 +61,17 @@ class ApiClientExtraFieldsTest {
             ),
             result
         )
+    }
+
+    @Test
+    fun `returns error when not 200`() {
+        fakeApi = Javalin.create().get("extra_data.csv") {
+            it.status(500)
+        }.start(1234)
+        val storeGateway = StoreProviderClient(baseUrl = "http://localhost:1234", apiKey = "api-key1")
+
+        val result = { storeGateway.listSpecialFields() }
+
+        assertThrows<Exception> { result() }
     }
 }

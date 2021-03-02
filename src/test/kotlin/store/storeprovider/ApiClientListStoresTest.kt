@@ -3,11 +3,9 @@ package store.storeprovider
 import io.javalin.Javalin
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import store.domain.StoreInfo
-import store.storeprovider.StoreProviderClient.ListStoresResult.FailedToFetch
-import store.storeprovider.StoreProviderClient.ListStoresResult.Valid
 import java.text.SimpleDateFormat
 
 class ApiClientListStoresTest {
@@ -53,7 +51,7 @@ class ApiClientListStoresTest {
         }.start(1234)
         val storeGateway = StoreProviderClient(baseUrl = "http://localhost:1234", apiKey = "api-key1")
 
-        val result = storeGateway.listStores(2) as Valid
+        val result = storeGateway.listStores(2)
 
         assertEquals("api-key1", usedApiKey)
         assertEquals(2, usedPage)
@@ -77,7 +75,7 @@ class ApiClientListStoresTest {
                     id = "103",
                 ),
             ),
-            result.storeInfos
+            result
         )
     }
 
@@ -88,8 +86,8 @@ class ApiClientListStoresTest {
         }.start(1234)
         val storeGateway = StoreProviderClient(baseUrl = "http://localhost:1234", apiKey = "api-key1")
 
-        val result = storeGateway.listStores(2)
+        val result = { storeGateway.listStores(2) }
 
-        assertTrue(result is FailedToFetch)
+        assertThrows<Exception> { result() }
     }
 }

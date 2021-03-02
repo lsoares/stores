@@ -3,6 +3,7 @@ package store.storerepository
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.statements.UpdateBuilder
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.joda.time.DateTime
 import store.domain.Store
@@ -54,7 +55,7 @@ class StoreRepositoryPostgreSql(private val database: Database) : StoreRepositor
             }.map {
                 Store(
                     id = it[StoreSchema.id],
-                    name = it[StoreSchema.customName] ?: it[StoreSchema.name],
+                    name = it[StoreSchema.customName] ?: it[StoreSchema.name], // TODO should be moved to business logic
                     code = it[StoreSchema.code],
                     description = it[StoreSchema.description],
                     type = it[StoreSchema.type],
@@ -77,24 +78,23 @@ class StoreRepositoryPostgreSql(private val database: Database) : StoreRepositor
         transaction(database) {
             if (StoreSchema.select { StoreSchema.id eq storeInfo.id }.count() == 0) {
                 StoreSchema.insert {
-                    it[id] = storeInfo.id
-                    it[name] = storeInfo.name
-                    it[code] = storeInfo.code
-                    it[description] = storeInfo.description
-                    it[type] = storeInfo.type
-                    it[openingDate] = storeInfo.openingDate?.let { DateTime(it) }
+                    mapValues(it, storeInfo)
                 }
             } else {
                 StoreSchema.update({ StoreSchema.id eq storeInfo.id }) {
-                    it[id] = storeInfo.id
-                    it[name] = storeInfo.name
-                    it[code] = storeInfo.code
-                    it[description] = storeInfo.description
-                    it[type] = storeInfo.type
-                    it[openingDate] = storeInfo.openingDate?.let { DateTime(it) }
+                    mapValues(it, storeInfo)
                 }
             }
         }
+    }
+
+    private fun StoreSchema.mapValues(it: UpdateBuilder<Number>, storeInfo: StoreInfo) {
+        it[id] = storeInfo.id
+        it[name] = storeInfo.name
+        it[code] = storeInfo.code
+        it[description] = storeInfo.description
+        it[type] = storeInfo.type
+        it[openingDate] = storeInfo.openingDate?.let { DateTime(it) }
     }
 
     override fun saveExtraField(storeId: String, name: String, value: String) {

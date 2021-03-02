@@ -13,23 +13,16 @@ import java.text.SimpleDateFormat
 
 class StoreProviderClient(private val baseUrl: String, private val apiKey: String) {
 
-    fun listStores(page: Int): ListStoresResult {
+    fun listStores(page: Int): List<StoreInfo> {
         val httpRequest = HttpRequest.newBuilder()
             .uri(URI.create("$baseUrl/v1/stores/?page=$page"))
             .header("apiKey", apiKey)
             .GET()
 
         return httpClient.send(httpRequest.build(), ofString()).run {
-            if (statusCode() != HttpStatus.OK_200) {
-                return ListStoresResult.FailedToFetch
-            }
-            ListStoresResult.Valid(body().toStore())
+            check(statusCode() == HttpStatus.OK_200)
+            body().toStore()
         }
-    }
-
-    sealed class ListStoresResult {
-        class Valid(val storeInfos: List<StoreInfo>) : ListStoresResult()
-        object FailedToFetch : ListStoresResult()
     }
 
     private fun String.toStore() =
@@ -47,13 +40,14 @@ class StoreProviderClient(private val baseUrl: String, private val apiKey: Strin
         }
 
     fun listSpecialFields(): List<StoreExtraFields> {
-        // TODO: deal with != 200
         val httpRequest = HttpRequest.newBuilder()
             .uri(URI.create("$baseUrl/extra_data.csv"))
             .header("apiKey", apiKey)
             .GET()
 
         return httpClient.send(httpRequest.build(), ofString()).run {
+            check(statusCode() == HttpStatus.OK_200)
+
             csvReader().readAllWithHeader(body().trim())
                 .mapNotNull { row ->
                     val trimmedRow = row.mapKeys { it.key.trim() }.mapValues { it.value.trim() }
@@ -66,13 +60,14 @@ class StoreProviderClient(private val baseUrl: String, private val apiKey: Strin
     }
 
     fun listSeasons(): Map<String, Set<String>> {
-        // TODO: deal with != 200
         val httpRequest = HttpRequest.newBuilder()
             .uri(URI.create("$baseUrl/other/stores_and_seasons"))
             .header("apiKey", apiKey)
             .GET()
 
         return httpClient.send(httpRequest.build(), ofString()).run {
+            check(statusCode() == HttpStatus.OK_200)
+
             (objectMapper.readTree(body()) as ArrayNode).groupBy {
                 it["storeId"].intValue().toString()
             }.mapValues {

@@ -21,7 +21,7 @@ Run `./test.sh` so that the whole suite of tests is run.
 
 ### Run the app
 
-Run `docker-compose run` at the root to start the webapp, backend and worker to get stores' data.
+Run `docker-compose run` at the root to start the webapp, backend, and data importer.
 
 # Design decisions
 
@@ -42,3 +42,7 @@ Run `docker-compose run` at the root to start the webapp, backend and worker to 
 - The seasons have functionality other that displaying, which means it would be over-engineering to create tables, do
   joins, creating the code to deal with it, etc. Also, I'd have to make assumptions on how it was to be used (if used at
   all).
+- I had created some exceptions in the beginning
+  but [they're not idiomatic in Kotlin](https://elizarov.medium.com/kotlin-and-exceptions-8062f589d07). Then I swapped
+  to sealed classes and realized they were not needed. Why? Because all exceptions are not part of the application flow,
+  which means we can handle them in the outer layers of our application.
