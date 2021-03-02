@@ -78,7 +78,9 @@
         <label v-for="(value, key) in currentStore.extraFields">
             {{ key }}: <span>{{ value }}</span>
         </label>
-        <label>Seasons: <span>{{ currentStore.seasons.join(", ")}}</span></label>
+        <label v-if="currentStore.seasons.length">
+            Seasons: <span>{{ currentStore.seasons.join(", ")}}</span>
+        </label>
         <small>{{ currentStore.description }}</small>
     </section>
 </section>
