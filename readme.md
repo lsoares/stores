@@ -8,7 +8,7 @@ Run `./test.sh` so that the whole suite of tests is run.
 
 ### Run the app
 
-1. Run `docker-compose run` at the root to start the webapp, backend, and data importer.
+1. Run `docker-compose up` at the root to start the webapp, backend, and data importer.
 2. Wait a few seconds because the loader takes a while to import stores to the local database
 3. [Go to localhost:8080](http://localhost:8080)
 

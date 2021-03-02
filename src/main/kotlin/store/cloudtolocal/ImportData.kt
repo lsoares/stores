@@ -2,6 +2,7 @@ package store.cloudtolocal
 
 import store.AppConfig
 import store.RealConfig
+import java.util.*
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
@@ -17,14 +18,14 @@ fun main() {
 }
 
 private fun AppConfig.importAllData() {
-    println("🏬 ------ Stores import job starting -------")
+    println("🏬 ------ Stores import job starting ${Date()} -------")
     println("Importing stores info…")
     importStoresInfo()
     println("Importing extra fields…")
     importExtraFields()
     println("Importing seasons…")
     importSeasons()
-    println("✅")
+    println("✅ ${Date()}")
 }
 
 private fun AppConfig.importStoresInfo() {
