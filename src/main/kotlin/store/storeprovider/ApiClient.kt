@@ -50,10 +50,14 @@ class StoreProviderClient(private val baseUrl: String, private val apiKey: Strin
 
             csvReader().readAllWithHeader(body().trim())
                 .mapNotNull { row ->
-                    val trimmedRow = row.mapKeys { it.key.trim() }.mapValues { it.value.trim() }
+                    val trimmedRow = row
+                        .mapKeys { it.key.trim() }
+                        .mapValues { it.value.trim() }
                     StoreExtraFields(
-                        storeId = trimmedRow["Store id"] ?: return@mapNotNull null,
-                        extraFields = trimmedRow.filterNot { it.key == "Store id" }
+                        storeId = trimmedRow["Store id"].takeUnless(String?::isNullOrBlank) ?: return@mapNotNull null,
+                        extraFields = trimmedRow
+                            .filterNot { it.key == "Store id" }
+                            .filterNot { it.value.isBlank() }
                     )
                 }
         }

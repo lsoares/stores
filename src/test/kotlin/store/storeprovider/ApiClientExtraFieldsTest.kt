@@ -26,7 +26,9 @@ class ApiClientExtraFieldsTest {
                     Store id,Special field 1, Special field 2
                     1,     a      ,b
                     4,,
+                    5,  ,b2
                     29279500,"a, b, c",2
+                    ,x,y
                 """.trimIndent()
             )
         }.start(1234)
@@ -46,9 +48,12 @@ class ApiClientExtraFieldsTest {
                 ),
                 StoreExtraFields(
                     storeId = "4",
+                    emptyMap(),
+                ),
+                StoreExtraFields(
+                    storeId = "5",
                     extraFields = mapOf(
-                        "Special field 1" to "",
-                        "Special field 2" to "",
+                        "Special field 2" to "b2",
                     ),
                 ),
                 StoreExtraFields(
