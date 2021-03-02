@@ -55,3 +55,5 @@ Run `./test.sh` so that the whole suite of tests is run.
 - Regarding the file importer, the endpoints are called independently; the same applies to every page. This means that
   all of those can fail individually without aborting the job or the scheduler. The inserts could be done in bulk to
   make the importer faster. There could exist a retry mechanism, but it's not worth it since the job runs every hour.
+- Although this was not totally lean, I decided to have internal and external store ids, to decouple them and not have
+  any dependency to external systems on the internal entities.

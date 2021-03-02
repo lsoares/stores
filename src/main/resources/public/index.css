@@ -114,5 +114,13 @@ input {
 }
 
 .export-to-csv {
-    margin-left: 80px;
+    margin-right: 16px;
+}
+
+.description-col {
+    display: block;
+    width: 250px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }

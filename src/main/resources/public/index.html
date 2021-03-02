@@ -17,18 +17,18 @@
     </header>
     <section class="main">
         <div>
-            <!-- TODO: page selector -->
-            <!-- TODO: create page navigator component -->
-            <button :disabled="currentPage <= 1" @click="previousPage">◀</button>
-            <label class="page">Page {{ currentPage}}</label>
-            <button @click="nextPage">▶</button>
-            <input aria-label="Search store by name" class="name-search" placeholder="Search store by name"
-                   v-model="nameSearch"/>
             <a class="export-to-csv" href="/stores/export.csv" title="Download all as CSV">
                 <img alt="Download all as CSV"
                      class="icon-button"
                      src="https://cdn0.iconfinder.com/data/icons/common-file-extensions-audio-documents/24/ext_csv-512.png"/>
             </a>
+            <!-- TODO: page selector -->
+            <!-- TODO: create page navigator component -->
+            <button :disabled="currentPage <= 1" @click="previousPage">◀</button>
+            <label class="page">Page {{ currentPage}}</label>
+            <button @click="nextPage">▶</button>
+            <input aria-label="Search store by name" class="name-search"
+                   placeholder="Search store by name" v-model="nameSearch"/>
         </div>
         <table class="styled-table">
             <thead>
@@ -36,6 +36,7 @@
                 <td>Name</td>
                 <td>Type</td>
                 <td>Opening date</td>
+                <td>Description</td>
             </tr>
             </thead>
             <tbody>
@@ -45,6 +46,11 @@
                 <td>{{ store.name }}</td>
                 <td>{{ store.type }}</td>
                 <td>{{ store.openingDate }}</td>
+                <td>
+                    <span :title="store.description" class="description-col">
+                        {{ store.description }}
+                    </span>
+                </td>
             </tr>
             </tbody>
         </table>
