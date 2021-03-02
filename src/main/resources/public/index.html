@@ -17,10 +17,10 @@
     </header>
     <section class="main">
         <div>
-            <button :disabled="currentPage <= 1" @click="previousPage">◀</button>
-            <label class="page">Page {{ currentPage}}</label>
             <!-- TODO: page selector -->
             <!-- TODO: create page navigator component -->
+            <button :disabled="currentPage <= 1" @click="previousPage">◀</button>
+            <label class="page">Page {{ currentPage}}</label>
             <button @click="nextPage">▶</button>
             <input aria-label="Search store by name" class="name-search" placeholder="Search store by name"
                    v-model="nameSearch"/>
@@ -55,6 +55,7 @@
         </div>
     </section>
 
+    <!-- TODO: detail component -->
     <section class="detail" v-if="currentStore !== null">
         <h2>
             <span>{{ currentStore.name }}</span>
