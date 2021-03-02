@@ -18,8 +18,12 @@ class App(appConfig: AppConfig) : AutoCloseable {
     private val javalinApp by lazy {
         with(appConfig) {
             Javalin
-                .create {
-                    it.setupWebpage()
+                .create { config ->
+                    runCatching {
+                        config.withHotReload("src/main/resources/public")
+                    }.onFailure {
+                        config.addStaticFiles("/public")
+                    }
                 }
                 .routes {
                     path("stores") {
@@ -35,13 +39,8 @@ class App(appConfig: AppConfig) : AutoCloseable {
         }
     }
 
-    private fun JavalinConfig.setupWebpage() {
-        runCatching {
-            addStaticFiles("src/main/resources/public", Location.EXTERNAL)
-        }.onFailure {
-            addStaticFiles("/public", Location.CLASSPATH)
-        }
-    }
+    private fun JavalinConfig.withHotReload(path: String) =
+        addStaticFiles(path, Location.EXTERNAL)
 
     fun start(port: Int): App {
         javalinApp.start(port)

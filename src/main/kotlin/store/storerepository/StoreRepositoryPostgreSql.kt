@@ -3,7 +3,6 @@ package store.storerepository
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.jetbrains.exposed.sql.*
-import org.jetbrains.exposed.sql.statements.UpdateBuilder
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.joda.time.DateTime
 import store.domain.Store
@@ -12,6 +11,7 @@ import store.domain.StoreRepository
 import java.sql.Blob
 import javax.sql.rowset.serial.SerialBlob
 
+// TODO should be dealing with real entities only
 class StoreRepositoryPostgreSql(private val database: Database) : StoreRepository {
 
     init {
@@ -24,9 +24,9 @@ class StoreRepositoryPostgreSql(private val database: Database) : StoreRepositor
     }
 
     private object StoreSchema : Table("stores") {
-        val id = varchar("id", 20).primaryKey()
+        val id = varchar("id", 20).primaryKey() // TODO: rename to external_id
         val name = varchar("name", 50).nullable()
-        val customName = varchar("custom_name", 50).nullable()
+        val customName = bool("custom_name").nullable()
         val description = varchar("description", 2000).nullable()
         val type = varchar("type", 40).nullable()
         val openingDate = date("opening_date").nullable()
@@ -42,7 +42,7 @@ class StoreRepositoryPostgreSql(private val database: Database) : StoreRepositor
 
     override fun list(page: Int?, nameSearch: String?) = transaction(database) {
         StoreSchema.selectAll()
-            .orderBy(StoreSchema.openingDate, SortOrder.DESC)
+            .orderBy(StoreSchema.id, SortOrder.DESC)
             .apply {
                 page?.let {
                     limit(10, page * 10)
@@ -55,7 +55,7 @@ class StoreRepositoryPostgreSql(private val database: Database) : StoreRepositor
             }.map {
                 Store(
                     id = it[StoreSchema.id],
-                    name = it[StoreSchema.customName] ?: it[StoreSchema.name], // TODO should be moved to business logic
+                    name = it[StoreSchema.name],
                     code = it[StoreSchema.code],
                     description = it[StoreSchema.description],
                     type = it[StoreSchema.type],
@@ -74,27 +74,30 @@ class StoreRepositoryPostgreSql(private val database: Database) : StoreRepositor
             .map { it[StoreExtraFieldSchema.name] to it[StoreExtraFieldSchema.value] }
             .toMap()
 
-    override fun saveInfo(storeInfo: StoreInfo) { // TODO should receive store
+    override fun saveInfo(storeInfo: StoreInfo) {
         transaction(database) {
-            if (StoreSchema.select { StoreSchema.id eq storeInfo.id }.count() == 0) {
+            val store = StoreSchema.select { StoreSchema.id eq storeInfo.id }.singleOrNull()
+
+            if (store == null) {
                 StoreSchema.insert {
-                    mapValues(it, storeInfo)
+                    it[id] = storeInfo.id
+                    it[name] = storeInfo.name
+                    it[code] = storeInfo.code
+                    it[description] = storeInfo.description
+                    it[type] = storeInfo.type
+                    it[openingDate] = storeInfo.openingDate?.let { DateTime(it) }
                 }
             } else {
                 StoreSchema.update({ StoreSchema.id eq storeInfo.id }) {
-                    mapValues(it, storeInfo)
+                    if (store[customName] != true)
+                        it[name] = storeInfo.name
+                    it[code] = storeInfo.code
+                    it[description] = storeInfo.description
+                    it[type] = storeInfo.type
+                    it[openingDate] = storeInfo.openingDate?.let { DateTime(it) }
                 }
             }
         }
-    }
-
-    private fun StoreSchema.mapValues(it: UpdateBuilder<Number>, storeInfo: StoreInfo) {
-        it[id] = storeInfo.id
-        it[name] = storeInfo.name
-        it[code] = storeInfo.code
-        it[description] = storeInfo.description
-        it[type] = storeInfo.type
-        it[openingDate] = storeInfo.openingDate?.let { DateTime(it) }
     }
 
     override fun saveExtraField(storeId: String, name: String, value: String) {
@@ -120,7 +123,8 @@ class StoreRepositoryPostgreSql(private val database: Database) : StoreRepositor
     override fun setCustomStoreName(storeId: String, newName: String) {
         transaction(database) {
             StoreSchema.update({ StoreSchema.id eq storeId }) {
-                it[customName] = newName
+                it[name] = newName
+                it[customName] = true
             }
         }
     }

@@ -17,7 +17,8 @@ fun main() {
 }
 
 private fun AppConfig.importAllData() {
-    println("Importing stores info 🏬…")
+    println("🏬 ------ Stores import job starting -------")
+    println("Importing stores info…")
     importStoresInfo()
     println("Importing extra fields…")
     importExtraFields()

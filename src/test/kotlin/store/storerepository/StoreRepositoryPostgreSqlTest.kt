@@ -69,6 +69,19 @@ class StoreRepositoryPostgreSqlTest {
     }
 
     @Test
+    fun `updates an existent store info but leaves name intact if it was changed by user`() {
+        storeRepository.saveInfo(storeInfo)
+        storeRepository.setCustomStoreName(storeInfo.id, "custom name")
+
+        storeRepository.saveInfo(storeInfo.copy(name = "try override"))
+
+        assertEquals(
+            "custom name",
+            storeRepository.list(0).single().name
+        )
+    }
+
+    @Test
     fun `saves store extra fields`() {
         storeRepository.saveInfo(storeInfo)
 
@@ -140,17 +153,5 @@ class StoreRepositoryPostgreSqlTest {
     @Test
     fun `ignores a non-existent store`() {
         storeRepository.setCustomStoreName("999", "new name")
-    }
-
-    @Test
-    fun `does not loose user provided name when updating it`() {
-        storeRepository.saveInfo(storeInfo)
-        storeRepository.setCustomStoreName(storeInfo.id, "new name")
-        storeRepository.saveInfo(storeInfo.copy(name = "try overwriting name"))
-
-        assertEquals(
-            "new name",
-            storeRepository.list(0).single().name
-        )
     }
 }
