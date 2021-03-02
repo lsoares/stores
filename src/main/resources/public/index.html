@@ -67,7 +67,7 @@
         <form v-if="newStoreName !== null" v-on:submit.prevent="confirmStoreName(this.currentStore.id)">
             <input aria-label="Edit store name" minlength="3" placeholder="New store name"
                    required v-model="newStoreName"/>
-            <button class="icon-button" type="submit">Save</button>
+            <button type="submit">Save</button>
         </form>
 
         <span class="store-type">{{ currentStore.type }}</span>

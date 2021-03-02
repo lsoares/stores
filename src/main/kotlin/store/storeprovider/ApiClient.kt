@@ -21,11 +21,11 @@ class StoreProviderClient(private val baseUrl: String, private val apiKey: Strin
 
         return httpClient.send(httpRequest.build(), ofString()).run {
             check(statusCode() == HttpStatus.OK_200)
-            body().toStore()
+            body().toStores()
         }
     }
 
-    private fun String.toStore() =
+    private fun String.toStores() =
         (objectMapper.readTree(this) as ArrayNode).map {
             StoreInfo(
                 id = it.get("id").intValue().toString(),

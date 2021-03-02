@@ -18,4 +18,7 @@ RUN gradle shadowJar -x test
 FROM openjdk:15.0-slim
 WORKDIR /usr/src/app
 COPY --from=build /usr/src/app/build/libs ./
-CMD [ "java", "-jar", "store-1.0-SNAPSHOT-all.jar" ]
+
+ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.7.3/wait /wait
+RUN chmod +x /wait
+CMD /wait && java -jar store-1.0-SNAPSHOT-all.jar

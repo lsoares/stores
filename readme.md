@@ -10,8 +10,8 @@
   - view seasons ✅
 - Search stores by name ✅
 - Edit store name ✅
-- ✨ Download CSV ✅
-- ✨ Cron job for auto-importer ✅
+- ✨ Download all stores as CSV ✅
+- ✨ Scheduled auto-importer ✅
 
 ## Usage
 
@@ -21,7 +21,9 @@ Run `./test.sh` so that the whole suite of tests is run.
 
 ### Run the app
 
-Run `docker-compose run` at the root to start the webapp, backend, and data importer.
+1. Run `docker-compose run` at the root to start the webapp, backend, and data importer.
+2. Wait a few seconds because the loader takes a while to get stores
+3. [Go to localhost:8080](http://localhost:8080)
 
 # Design decisions
 

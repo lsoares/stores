@@ -7,7 +7,12 @@ import java.util.concurrent.TimeUnit
 
 fun main() {
     Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate({
-        RealConfig.importAllData()
+        runCatching {
+            RealConfig.importAllData()
+        }.onFailure {
+            println("Error in job")
+            it.printStackTrace()
+        }
     }, 0, 1, TimeUnit.HOURS)
 }
 
@@ -33,7 +38,7 @@ private fun AppConfig.importStoresInfo() {
             print("⚠️")
         }
         page++
-    } while (result.getOrThrow().isNotEmpty())
+    } while (result.isFailure || result.getOrThrow().isNotEmpty())
     println()
 }
 
