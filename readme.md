@@ -2,15 +2,16 @@
 
 ## Usage
 
-### Run the tests
-
-Run `./test.sh` so that the whole suite of tests is run.
-
 ### Run the app
 
 1. Run `docker-compose up` at the root to start the webapp, backend, and data importer.
 2. Wait a few seconds because the loader takes a while to import stores to the local database
 3. [Go to localhost:8080](http://localhost:8080)
+
+### Run the tests
+
+- Run `./test.sh` so that the whole suite of tests is run.
+- Run `npm t` to run the UI tests. Make sure the app has some data first by running `docker-compose up` first.
 
 ## User stories
 

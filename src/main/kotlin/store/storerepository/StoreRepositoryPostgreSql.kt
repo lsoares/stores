@@ -64,7 +64,7 @@ class StoreRepositoryPostgreSql(private val database: Database) : StoreRepositor
                     description = it[StoreSchema.description],
                     type = it[StoreSchema.type],
                     openingDate = it[StoreSchema.openingDate]?.toDate(),
-                    extraFields = listExtraFields(it[StoreSchema.externalId]),
+                    extraFields = listExtraFields(it[StoreSchema.externalId]), // TODO use a JOIN instead
                     seasons = it[StoreSchema.seasons]?.parseSeasons() ?: emptySet()
                 )
             }

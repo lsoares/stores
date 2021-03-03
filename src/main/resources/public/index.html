@@ -66,7 +66,7 @@
         <h2>
             <span>{{ currentStore.name }}</span>
             <span @click="newStoreName = currentStore.name" class="icon-button"
-                  title="Edit store name">
+                  aria-label="Edit store name" title="Edit store name">
                 ✏️
             </span>
         </h2>
@@ -74,7 +74,7 @@
         <form v-if="newStoreName !== null" v-on:submit.prevent="confirmStoreName(this.currentStore.id)">
             <input aria-label="Edit store name" maxlength="50" minlength="3"
                    placeholder="New store name" required v-model="newStoreName"/>
-            <button type="submit">Save</button>
+            <button aria-label="Save name" type="submit">Save</button>
         </form>
 
         <span class="store-type">{{ currentStore.type }}</span>
