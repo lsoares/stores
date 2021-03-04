@@ -24,9 +24,9 @@
             </a>
             <!-- TODO: page selector -->
             <!-- TODO: create page navigator component -->
-            <button :disabled="currentPage <= 1" @click="previousPage">◀</button>
+            <button :disabled="currentPage <= 1" @click="previousPage" title="Previous page">&lt</button>
             <label class="page">Page {{ currentPage}}</label>
-            <button @click="nextPage">▶</button>
+            <button @click="nextPage" title="Next page">&gt;</button>
             <input aria-label="Search store by name" class="name-search"
                    placeholder="Search store by name" v-model="nameSearch"/>
         </div>
@@ -55,9 +55,9 @@
             </tbody>
         </table>
         <div>
-            <button :disabled="currentPage <= 1" @click="previousPage">◀</button>
+            <button :disabled="currentPage <= 1" @click="previousPage" title="Previous page">&lt</button>
             <label class="page">Page {{ currentPage}}</label>
-            <button @click="nextPage">▶</button>
+            <button @click="nextPage" title="Next page">&gt;</button>
         </div>
     </section>
 
@@ -85,7 +85,7 @@
             {{ key }}: <span>{{ value }}</span>
         </label>
         <label v-if="currentStore.seasons.length">
-            Seasons: <span>{{ currentStore.seasons.join(", ")}}</span>
+            Seasons: <span>{{ currentStore.seasons.join(" ")}}</span>
         </label>
         <small>{{ currentStore.description }}</small>
     </section>

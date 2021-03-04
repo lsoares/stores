@@ -33,7 +33,7 @@ class ListStoresTest {
                         openingDate = SimpleDateFormat("yyyy-MM-dd").parse("2000-12-31"),
                         type = "STORE TYPE 1",
                         extraFields = mapOf("ab" to "x", "xy" to "bla"),
-                        seasons = setOf("2020 H1", "2002 H2"),
+                        seasons = setOf("H2 19", "H1 20", "H2 20", "H1 21"),
                     ))
                 }
 
@@ -63,7 +63,7 @@ class ListStoresTest {
                             "ab": "x", 
                             "xy": "bla"
                          },
-                         "seasons": ["2020 H1", "2002 H2"]
+                         "seasons": ["2019◑", "2020", "2021◐"]
                        }
                     ] """,
                 response.body(),

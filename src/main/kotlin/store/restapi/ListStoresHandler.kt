@@ -14,7 +14,7 @@ class ListStoresHandler(private val listStores: ListStoresUseCase) : Handler {
     }
 
     private val Context.textSearch
-        get() = queryParam("nameSearch").takeUnless { it.isNullOrBlank() }
+        get() = queryParam("nameSearch").takeUnless(String?::isNullOrBlank)
 
     private val Context.page
         get() = queryParam("page")?.toInt()?.minus(1) ?: error("missing page param")
@@ -39,13 +39,24 @@ class ListStoresHandler(private val listStores: ListStoresUseCase) : Handler {
         val name: String?,
         val code: String?,
         val description: String?,
-        openingDate: Date?,
         val extraFields: Map<String, String?>,
-        val seasons: Set<String>, // TODO improve string representation
+        openingDate: Date?,
+        seasons: Set<String>,
         type: String?,
     ) {
         val type = type?.toLowerCase()?.capitalize()
         val openingDate: String? = openingDate?.let { dateFormat.format(it) }
+        val seasons: List<String> = seasons.groupBy { it.takeLast(2) }
+            .mapKeys { it.key.toIntOrNull()?.plus(2000) }
+            .mapValues {
+                if (it.value.size == 1) {
+                    when {
+                        it.value.first().startsWith("H1") -> "◐"
+                        it.value.first().startsWith("H2") -> "◑"
+                        else -> ""
+                    }
+                } else ""
+            }.map { "${it.key}${it.value}" }
     }
 }
 
