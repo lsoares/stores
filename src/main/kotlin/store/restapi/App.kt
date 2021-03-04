@@ -34,7 +34,7 @@ class App(appConfig: AppConfig) : AutoCloseable {
                 }
                 .exception(Exception::class.java) { ex, _ ->
                     // TODO: use proper logger
-                    println(ex.message)
+                    ex.printStackTrace()
                 }
         }
     }

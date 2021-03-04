@@ -43,6 +43,10 @@ const StoreList = {
         confirmStoreName(storeId) {
             axios
                 .patch(`/stores/${storeId}`, {newName: this.newStoreName})
+                .then(() => {
+                    this.currentStore.name = this.newStoreName
+                    this.newStoreName = null
+                })
                 .then(this.getStores)
             return false
         },
