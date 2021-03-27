@@ -1,0 +1,23 @@
+{
+  "name": "store",
+  "version": "1.0.0",
+  "description": "## Usage",
+  "main": "tests/ui-tests.js",
+  "scripts": {
+    "test": "testcafe edge tests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lsoares/acme-stores.git"
+  },
+  "author": "Luís Soares",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lsoares/stores/issues"
+  },
+  "homepage": "https://github.com/lsoares/stores#readme",
+  "devDependencies": {
+    "@testing-library/testcafe": "^4.3.1",
+    "testcafe": "^1.11.0"
+  }
+}

@@ -1,0 +1,43 @@
+version: "3.8"
+services:
+
+  rest_api:
+    container_name: rest_api
+    image: ls/stores_app
+    build: .
+    ports:
+      - 8080:8080
+    environment:
+      API_PORT: 8080
+      DATABASE_URL: jdbc:postgresql://database:5432/stores_db
+      DATABASE_USER: kotlin_app
+      DATABASE_PASSWORD: abcde123
+      WAIT_HOSTS: database:5432
+    depends_on:
+      - database
+    restart: on-failure:3
+
+  worker:
+    container_name: worker
+    build:
+      context: .
+      dockerfile: worker.Dockerfile
+    environment:
+      STORES_API_BASE_URL: http://134.209.29.209
+      STORES_API_KEY: 76a325g7g2ahs7h4673aa25s47632h5362a4532642
+      DATABASE_URL: jdbc:postgresql://database:5432/stores_db
+      DATABASE_USER: kotlin_app
+      DATABASE_PASSWORD: abcde123
+      WAIT_HOSTS: database:5432
+    depends_on:
+      - rest_api
+      - database
+
+  database:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: stores_db
+      POSTGRES_USER: kotlin_app
+      POSTGRES_PASSWORD: abcde123
+    ports:
+      - 5431:5432

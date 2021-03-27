@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>ACME® Corporation Stores</title>
+    <meta charset="UTF-8"/>
+    <script src="https://unpkg.com/vue@next"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+    <link rel="stylesheet" href="index.css"/>
+    <link rel="icon" type="image/png" href="https://cdn2.iconfinder.com/data/icons/random-set-1/448/Asset_94-512.png"/>
+</head>
+
+<body>
+<section id="stores-app">
+    <header>
+        <h1>ACME® Corporation Stores</h1>
+    </header>
+    <section class="main">
+        <div>
+            <a class="export-to-csv" href="/stores/export.csv" title="Download all as CSV">
+                <img alt="Download all as CSV"
+                     class="icon-button"
+                     src="https://cdn0.iconfinder.com/data/icons/common-file-extensions-audio-documents/24/ext_csv-512.png"/>
+            </a>
+            <!-- TODO: page selector -->
+            <!-- TODO: create page navigator component -->
+            <button :disabled="currentPage <= 1" @click="previousPage" title="Previous page">&lt</button>
+            <label class="page">Page {{ currentPage}}</label>
+            <button @click="nextPage" title="Next page">&gt;</button>
+            <input aria-label="Search store by name" class="name-search"
+                   placeholder="Search store by name" v-model="nameSearch"/>
+        </div>
+        <table class="styled-table">
+            <thead>
+            <tr>
+                <td>Name</td>
+                <td>Type</td>
+                <td>Opening date</td>
+                <td>Description</td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr :class="{ 'active-row': store.id === currentStore?.id }" :key="store.id"
+                @click="currentStore = store"
+                v-for="store in stores">
+                <td>{{ store.name }}</td>
+                <td>{{ store.type }}</td>
+                <td>{{ store.openingDate }}</td>
+                <td>
+                    <span :title="store.description" class="description-col">
+                        {{ store.description }}
+                    </span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div>
+            <button :disabled="currentPage <= 1" @click="previousPage" title="Previous page">&lt</button>
+            <label class="page">Page {{ currentPage}}</label>
+            <button @click="nextPage" title="Next page">&gt;</button>
+        </div>
+    </section>
+
+    <!-- TODO: detail component -->
+    <section class="detail" v-if="currentStore !== null">
+        <h2>
+            <span>{{ currentStore.name }}</span>
+            <span @click="newStoreName = currentStore.name" class="icon-button"
+                  aria-label="Edit store name" title="Edit store name">
+                ✏️
+            </span>
+        </h2>
+
+        <form v-if="newStoreName !== null" v-on:submit.prevent="confirmStoreName(this.currentStore.id)">
+            <input aria-label="Edit store name" maxlength="50" minlength="3"
+                   placeholder="New store name" required v-model="newStoreName"/>
+            <button aria-label="Save name" type="submit">Save</button>
+        </form>
+
+        <span class="store-type">{{ currentStore.type }}</span>
+        <label>Id.: <span>{{ currentStore.id }}</span></label>
+        <label>Code: <span>{{ currentStore.code }}</span></label>
+        <label>Opening date: <span>{{ currentStore.openingDate }}</span></label>
+        <label v-for="(value, key) in currentStore.extraFields">
+            {{ key }}: <span>{{ value }}</span>
+        </label>
+        <label v-if="currentStore.seasons.length">
+            Seasons: <span>{{ currentStore.seasons.join(" ")}}</span>
+        </label>
+        <small>{{ currentStore.description }}</small>
+    </section>
+</section>
+
+<script src="index.js"></script>
+</body>
+
+</html>
